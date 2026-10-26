@@ -152,7 +152,8 @@ export async function createCombatController(
     direction.y = 0;
     direction.normalize();
     monster.root.position.addInPlace(direction.scale(monster.definition.moveSpeed * deltaSeconds));
-    monster.root.rotation.y = Math.atan2(direction.x, direction.z);
+    // +PI car les modèles importés font face à +Z quand leur rotation vaut 180°, pas 0° (voir transformUtils.ts).
+    monster.root.rotation.y = Math.atan2(direction.x, direction.z) + Math.PI;
   }
 
   function tickMonster(monster: MonsterInstance, deltaSeconds: number): void {

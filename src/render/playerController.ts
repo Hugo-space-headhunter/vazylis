@@ -1,4 +1,4 @@
-import { Engine, FollowCamera, Scene, Vector3 } from "@babylonjs/core";
+import { ArcRotateCamera, Engine, Scene, Vector3 } from "@babylonjs/core";
 import { PLAYER_MOVEMENT } from "../config/player";
 import type { Animator } from "./animator";
 import type { Joystick } from "../ui/joystick";
@@ -19,7 +19,7 @@ export function createPlayerController(
   scene: Scene,
   engine: Engine,
   character: LoadedCharacter,
-  camera: FollowCamera,
+  camera: ArcRotateCamera,
   joystick: Joystick,
   animator: Animator,
 ): void {
@@ -39,7 +39,8 @@ export function createPlayerController(
 
       character.root.position.addInPlace(moveDirection.scale(PLAYER_MOVEMENT.speed * deltaSeconds));
 
-      const targetRotationY = Math.atan2(moveDirection.x, moveDirection.z);
+      // +PI car le modèle importé fait face à +Z quand sa rotation vaut 180°, pas 0°.
+      const targetRotationY = Math.atan2(moveDirection.x, moveDirection.z) + Math.PI;
       character.root.rotation.y = shortestAngleLerp(
         character.root.rotation.y,
         targetRotationY,

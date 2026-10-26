@@ -7,18 +7,20 @@ export const PLAYER_MOVEMENT = {
   turnSpeed: 12,
 };
 
-export const FOLLOW_CAMERA = {
-  /** Distance horizontale derrière le personnage. */
-  radius: 7,
-  /** Hauteur de la caméra au-dessus du personnage. */
-  heightOffset: 3.2,
-  /** Angle de la caméra derrière le personnage, en degrés (0 = derrière). */
-  rotationOffsetDegrees: 180,
-  /** Hauteur mini/maxi atteignable en tournant la caméra avec un deuxième doigt. */
-  minHeightOffset: 1.5,
-  maxHeightOffset: 6,
-  /** Degrés de rotation par pixel glissé horizontalement. */
-  rotationSensitivity: 0.4,
-  /** Mètres de hauteur par pixel glissé verticalement. */
-  heightSensitivity: 0.02,
+// Caméra en orbite autour du personnage (ArcRotateCamera) : elle ne suit que sa position,
+// jamais sa rotation, pour qu'on voie bien le personnage tourner sur lui-même.
+export const ORBIT_CAMERA = {
+  /** Distance de la caméra au personnage. */
+  radius: 8,
+  /** Angle horizontal de départ, en radians (-PI/2 = derrière un personnage qui regarde vers +Z). */
+  alpha: -Math.PI / 2,
+  /** Angle vertical de départ, en radians (plus petit = vue plus plongeante). */
+  beta: 1.15,
+  /** Limites verticales atteignables en tournant la caméra avec un deuxième doigt. */
+  minBeta: 0.5,
+  maxBeta: 1.5,
+  /** Radians de rotation horizontale par pixel glissé. */
+  alphaSensitivity: 0.007,
+  /** Radians de rotation verticale par pixel glissé. */
+  betaSensitivity: 0.006,
 };

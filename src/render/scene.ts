@@ -1,25 +1,30 @@
 import {
+  ArcRotateCamera,
   Color3,
   Color4,
   Engine,
-  FollowCamera,
   HemisphericLight,
   MeshBuilder,
   Scene,
   StandardMaterial,
   Vector3,
 } from "@babylonjs/core";
-import { FOLLOW_CAMERA } from "../config/player";
+import { ORBIT_CAMERA } from "../config/player";
 
 export interface GameScene {
   engine: Engine;
   scene: Scene;
-  camera: FollowCamera;
+  camera: ArcRotateCamera;
 }
 
 /**
  * Scène de base : sol, lumière, quelques repères visuels, caméra qui suivra le personnage.
  * Le personnage lui-même est chargé à part (voir render/character.ts), une fois le choix fait.
+ *
+ * On utilise une ArcRotateCamera (et non une FollowCamera) volontairement : une FollowCamera
+ * recalcule sa position à partir de la rotation du personnage, donc quand le personnage tourne,
+ * la caméra tourne avec lui et on ne voit jamais la rotation à l'écran. Une ArcRotateCamera ne
+ * suit que la position du personnage (via lockedTarget), jamais sa rotation.
  */
 export function createScene(canvas: HTMLCanvasElement): GameScene {
   const engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
@@ -36,12 +41,16 @@ export function createScene(canvas: HTMLCanvasElement): GameScene {
 
   addLandmarks(scene);
 
-  const camera = new FollowCamera("camera", new Vector3(0, FOLLOW_CAMERA.heightOffset, -FOLLOW_CAMERA.radius), scene);
-  camera.radius = FOLLOW_CAMERA.radius;
-  camera.heightOffset = FOLLOW_CAMERA.heightOffset;
-  camera.rotationOffset = FOLLOW_CAMERA.rotationOffsetDegrees;
-  camera.cameraAcceleration = 0.06;
-  camera.maxCameraSpeed = 20;
+  const camera = new ArcRotateCamera(
+    "camera",
+    ORBIT_CAMERA.alpha,
+    ORBIT_CAMERA.beta,
+    ORBIT_CAMERA.radius,
+    Vector3.Zero(),
+    scene,
+  );
+  camera.lowerBetaLimit = ORBIT_CAMERA.minBeta;
+  camera.upperBetaLimit = ORBIT_CAMERA.maxBeta;
   scene.activeCamera = camera;
 
   engine.runRenderLoop(() => {

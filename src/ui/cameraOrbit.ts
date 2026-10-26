@@ -1,5 +1,5 @@
-import type { FollowCamera } from "@babylonjs/core";
-import { FOLLOW_CAMERA } from "../config/player";
+import type { ArcRotateCamera } from "@babylonjs/core";
+import { ORBIT_CAMERA } from "../config/player";
 
 export interface CameraOrbitControl {
   dispose(): void;
@@ -9,7 +9,7 @@ export interface CameraOrbitControl {
  * Tourne la caméra autour du personnage avec un deuxième doigt (le premier sert au joystick).
  * Glisser horizontalement tourne autour du personnage, verticalement change la hauteur de vue.
  */
-export function createCameraOrbitControl(zone: HTMLElement, camera: FollowCamera): CameraOrbitControl {
+export function createCameraOrbitControl(zone: HTMLElement, camera: ArcRotateCamera): CameraOrbitControl {
   const activePointers = new Set<number>();
   let orbitPointerId: number | null = null;
   let lastX = 0;
@@ -32,10 +32,10 @@ export function createCameraOrbitControl(zone: HTMLElement, camera: FollowCamera
     lastX = event.clientX;
     lastY = event.clientY;
 
-    camera.rotationOffset = (camera.rotationOffset + dx * FOLLOW_CAMERA.rotationSensitivity + 360) % 360;
-    camera.heightOffset = Math.min(
-      FOLLOW_CAMERA.maxHeightOffset,
-      Math.max(FOLLOW_CAMERA.minHeightOffset, camera.heightOffset - dy * FOLLOW_CAMERA.heightSensitivity),
+    camera.alpha += dx * ORBIT_CAMERA.alphaSensitivity;
+    camera.beta = Math.min(
+      ORBIT_CAMERA.maxBeta,
+      Math.max(ORBIT_CAMERA.minBeta, camera.beta - dy * ORBIT_CAMERA.betaSensitivity),
     );
   }
 

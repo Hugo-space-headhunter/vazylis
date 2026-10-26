@@ -9,6 +9,7 @@ import {
 } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
 import type { MonsterDefinition } from "../config/monsters";
+import { makeRotatable } from "./transformUtils";
 
 export interface MonsterVisual {
   root: TransformNode;
@@ -32,6 +33,7 @@ async function loadMonsterModel(scene: Scene, definition: MonsterDefinition): Pr
 
   const result = await SceneLoader.ImportMeshAsync("", `${import.meta.env.BASE_URL}${folder}`, file, scene);
   const root = result.meshes[0];
+  makeRotatable(root);
   root.scaling.setAll(definition.scale);
 
   const animations: Record<string, AnimationGroup> = {};
