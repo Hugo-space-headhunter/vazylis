@@ -43,7 +43,7 @@ body {
   pointer-events: none;
 }
 
-#joystick-zone {
+#touch-zone {
   position: absolute;
   inset: 0;
   touch-action: none;

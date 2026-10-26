@@ -3,11 +3,12 @@ import { createScene } from "./render/scene";
 import { loadCharacter, type CharacterGender } from "./render/character";
 import { createPlayerController } from "./render/playerController";
 import { createJoystick } from "./ui/joystick";
+import { createCameraOrbitControl } from "./ui/cameraOrbit";
 import { attachFpsCounter } from "./ui/fpsCounter";
 
 const canvas = document.getElementById("render-canvas") as HTMLCanvasElement;
 const fpsElement = document.getElementById("fps-counter") as HTMLElement;
-const joystickZone = document.getElementById("joystick-zone") as HTMLElement;
+const touchZone = document.getElementById("touch-zone") as HTMLElement;
 const characterSelect = document.getElementById("character-select") as HTMLElement;
 
 async function startGame(gender: CharacterGender): Promise<void> {
@@ -19,7 +20,8 @@ async function startGame(gender: CharacterGender): Promise<void> {
   const character = await loadCharacter(scene, gender);
   camera.lockedTarget = character.root;
 
-  const joystick = createJoystick(joystickZone);
+  const joystick = createJoystick(touchZone);
+  createCameraOrbitControl(touchZone, camera);
   createPlayerController(scene, engine, character, camera, joystick);
 }
 

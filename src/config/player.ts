@@ -14,4 +14,11 @@ export const FOLLOW_CAMERA = {
   heightOffset: 3.2,
   /** Angle de la caméra derrière le personnage, en degrés (0 = derrière). */
   rotationOffsetDegrees: 180,
+  /** Hauteur mini/maxi atteignable en tournant la caméra avec un deuxième doigt. */
+  minHeightOffset: 1.5,
+  maxHeightOffset: 6,
+  /** Degrés de rotation par pixel glissé horizontalement. */
+  rotationSensitivity: 0.4,
+  /** Mètres de hauteur par pixel glissé verticalement. */
+  heightSensitivity: 0.02,
 };
