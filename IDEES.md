@@ -11,3 +11,5 @@ Notes et améliorations hors périmètre de l'étape en cours, à reprendre plus
 - Pas de recherche de chemin (pathfinding) pour les monstres qui chargent : ils foncent en ligne droite vers le joueur, donc ils peuvent rester bloqués contre un obstacle. À revoir quand le terrain aura de vrais obstacles.
 - Les monstres passifs touchés restent "engagés" (ils ripostent) jusqu'à leur mort, même si le joueur s'éloigne. Pas de désengagement après un délai pour l'instant.
 - Hugo a déjà téléchargé des packs d'**armes** et de **décors de donjon** (Quaternius). Pas encore déposés dans `assets/quaternius/` ni utilisés : à reprendre aux étapes 4 (armes, butin) et 6/8 (décors de zone et de donjon). Penser à vérifier leur licence (CC0) à ce moment-là.
+- Pas de parchemin de réinitialisation des statistiques pour l'instant (prévu "plus tard" dans le document de design) : une fois validés, les points ne peuvent plus être changés du tout dans le prototype.
+- L'affinité d'arme (ex. +0,3 % de dégâts par point d'Agilité avec des dagues) n'est pas encore appliquée : elle arrivera avec les vraies armes à l'étape 4.

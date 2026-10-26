@@ -30,12 +30,48 @@
         <div id="hud-name">Vazylien</div>
         <div id="hud-level">Niveau 1</div>
         <div class="hud-bar hp-bar"><div id="hud-hp-fill" class="hud-bar-fill"></div></div>
-        <div class="hud-bar mana-bar"><div class="hud-bar-fill" style="width: 100%"></div></div>
+        <div class="hud-bar mana-bar"><div id="hud-mana-fill" class="hud-bar-fill" style="width: 100%"></div></div>
         <div class="hud-bar xp-bar"><div id="hud-xp-fill" class="hud-bar-fill"></div></div>
       </div>
+      <button id="open-stats" type="button" class="icon-button">Stats</button>
       <div id="mode-buttons">
         <button id="mode-combat" type="button" class="mode-button">Arme</button>
         <button id="mode-move" type="button" class="mode-button active">Pied</button>
+      </div>
+      <div id="stats-panel" class="hidden">
+        <div class="stats-panel-box">
+          <h2>Statistiques</h2>
+          <div id="stats-points">Points disponibles : 0</div>
+          <div class="stats-row">
+            <span class="stats-label">Force</span>
+            <button type="button" class="stats-btn" data-stat="force" data-delta="-1">−</button>
+            <span id="stats-value-force" class="stats-value">0</span>
+            <button type="button" class="stats-btn" data-stat="force" data-delta="1">+</button>
+          </div>
+          <div class="stats-row">
+            <span class="stats-label">Agilité</span>
+            <button type="button" class="stats-btn" data-stat="agilite" data-delta="-1">−</button>
+            <span id="stats-value-agilite" class="stats-value">0</span>
+            <button type="button" class="stats-btn" data-stat="agilite" data-delta="1">+</button>
+          </div>
+          <div class="stats-row">
+            <span class="stats-label">Vitalité</span>
+            <button type="button" class="stats-btn" data-stat="vitalite" data-delta="-1">−</button>
+            <span id="stats-value-vitalite" class="stats-value">0</span>
+            <button type="button" class="stats-btn" data-stat="vitalite" data-delta="1">+</button>
+          </div>
+          <div class="stats-row">
+            <span class="stats-label">Intelligence</span>
+            <button type="button" class="stats-btn" data-stat="intelligence" data-delta="-1">−</button>
+            <span id="stats-value-intelligence" class="stats-value">0</span>
+            <button type="button" class="stats-btn" data-stat="intelligence" data-delta="1">+</button>
+          </div>
+          <div class="stats-actions">
+            <button id="stats-close" type="button" class="stats-action-btn">Fermer</button>
+            <button id="stats-validate" type="button" class="stats-action-btn primary">Valider</button>
+          </div>
+          <p class="stats-warning">Une fois validés, les points sont définitifs.</p>
+        </div>
       </div>
       <div id="character-select">
         <h1>Choisis ton personnage</h1>

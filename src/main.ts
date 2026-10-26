@@ -9,6 +9,7 @@ import { createCameraOrbitControl } from "./ui/cameraOrbit";
 import { attachFpsCounter } from "./ui/fpsCounter";
 import { createHud } from "./ui/hud";
 import { createModeToggle } from "./ui/modeToggle";
+import { createStatsPanel } from "./ui/statsPanel";
 import { createWorldOverlay } from "./ui/worldOverlay";
 
 const canvas = document.getElementById("render-canvas") as HTMLCanvasElement;
@@ -16,6 +17,7 @@ const fpsElement = document.getElementById("fps-counter") as HTMLElement;
 const touchZone = document.getElementById("touch-zone") as HTMLElement;
 const worldOverlayElement = document.getElementById("world-overlay") as HTMLElement;
 const characterSelect = document.getElementById("character-select") as HTMLElement;
+const openStatsButton = document.getElementById("open-stats") as HTMLButtonElement;
 
 async function startGame(gender: CharacterGender): Promise<void> {
   characterSelect.style.display = "none";
@@ -42,6 +44,13 @@ async function startGame(gender: CharacterGender): Promise<void> {
 
   const modeToggle = createModeToggle();
   modeToggle.onChange((combatMode) => combat.setCombatMode(combatMode));
+
+  const statsPanel = createStatsPanel();
+  statsPanel.onValidate((spent) => combat.applyStatPoints(spent));
+  openStatsButton.addEventListener("click", () => {
+    const snapshot = combat.getStatsSnapshot();
+    statsPanel.open(snapshot.stats, snapshot.availablePoints);
+  });
 }
 
 document.getElementById("select-male")?.addEventListener("click", () => void startGame("male"));

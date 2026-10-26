@@ -3,6 +3,15 @@ import { PLAYER_COMBAT } from "../config/combat";
 import { MONSTERS } from "../config/monsters";
 import { playerMaxHp, rollPlayerDamage } from "../game/combat";
 import { applyXpGain, requiredXpForLevel, xpGainForKill } from "../game/progression";
+import {
+  EMPTY_STATS,
+  attackSpeedMultiplier,
+  defense,
+  applyDamageReduction,
+  maxMana,
+  unspentPoints,
+  type PlayerStats,
+} from "../game/stats";
 import type { Animator } from "./animator";
 import type { LoadedCharacter } from "./character";
 import { playLevelUpEffect } from "./levelUpEffect";
@@ -17,6 +26,7 @@ export interface PlayerRuntime {
   hp: number;
   maxHp: number;
   combatMode: boolean;
+  stats: PlayerStats;
 }
 
 const SPAWN_POINTS: { monsterId: keyof typeof MONSTERS; position: Vector3 }[] = [
@@ -32,6 +42,10 @@ const PLAYER_HEAD_HEIGHT = 1.7;
 
 export interface CombatController {
   setCombatMode(combatMode: boolean): void;
+  /** Pour la fenêtre de statistiques : niveau actuel, points déjà placés et points disponibles. */
+  getStatsSnapshot(): { level: number; stats: PlayerStats; availablePoints: number };
+  /** Ajoute les points fraîchement validés aux statistiques du joueur. */
+  applyStatPoints(spent: PlayerStats): void;
 }
 
 export async function createCombatController(
@@ -52,9 +66,10 @@ export async function createCombatController(
     name: "Vazylien",
     level: 1,
     xp: 0,
-    hp: playerMaxHp(1),
-    maxHp: playerMaxHp(1),
+    hp: playerMaxHp(1, 0),
+    maxHp: playerMaxHp(1, 0),
     combatMode: false,
+    stats: { ...EMPTY_STATS },
   };
   let playerAttackCooldown = 0;
 
@@ -64,14 +79,16 @@ export async function createCombatController(
       level: player.level,
       hp: player.hp,
       maxHp: player.maxHp,
+      mana: maxMana(player.stats.intelligence),
       xp: player.xp,
       xpToNextLevel: requiredXpForLevel(player.level),
     });
   }
   refreshHud();
 
-  function damagePlayer(amount: number): void {
+  function damagePlayer(rawAmount: number, attackerLevel: number): void {
     if (player.hp <= 0) return;
+    const amount = Math.round(applyDamageReduction(rawAmount, defense(player.stats.vitalite), attackerLevel));
     player.hp = Math.max(0, player.hp - amount);
     overlay.showDamageNumber(character.root.position.add(new Vector3(0, PLAYER_HEAD_HEIGHT, 0)), amount, {
       onPlayer: true,
@@ -101,7 +118,7 @@ export async function createCombatController(
     player.level = result.level;
     player.xp = result.xp;
     if (result.leveledUp) {
-      player.maxHp = playerMaxHp(player.level);
+      player.maxHp = playerMaxHp(player.level, player.stats.vitalite);
       player.hp = player.maxHp;
       playLevelUpEffect(scene, character.root.position.clone());
     }
@@ -117,7 +134,7 @@ export async function createCombatController(
   }
 
   function playerAttack(target: MonsterInstance): void {
-    const roll = rollPlayerDamage(player.level, Math.random());
+    const roll = rollPlayerDamage(player.stats, Math.random());
     target.hp -= roll.amount;
     target.engaged = true;
     overlay.showDamageNumber(target.headPosition(), roll.amount, { critical: roll.isCritical });
@@ -130,7 +147,7 @@ export async function createCombatController(
 
   function monsterAttack(monster: MonsterInstance): void {
     monster.animator.playAttack();
-    damagePlayer(monster.definition.damage);
+    damagePlayer(monster.definition.damage, monster.definition.level);
   }
 
   function findNearestTargetInRange(): MonsterInstance | null {
@@ -214,7 +231,8 @@ export async function createCombatController(
         if (target) {
           animator.playAttack();
           playerAttack(target);
-          playerAttackCooldown = PLAYER_COMBAT.attackIntervalSeconds;
+          const speedMultiplier = attackSpeedMultiplier(player.stats.agilite);
+          playerAttackCooldown = PLAYER_COMBAT.attackIntervalSeconds / speedMultiplier;
         }
       }
     }
@@ -223,6 +241,21 @@ export async function createCombatController(
   return {
     setCombatMode(combatMode: boolean) {
       player.combatMode = combatMode;
+    },
+    getStatsSnapshot() {
+      return {
+        level: player.level,
+        stats: { ...player.stats },
+        availablePoints: unspentPoints(player.level, player.stats),
+      };
+    },
+    applyStatPoints(spent: PlayerStats) {
+      player.stats.force += spent.force;
+      player.stats.agilite += spent.agilite;
+      player.stats.vitalite += spent.vitalite;
+      player.stats.intelligence += spent.intelligence;
+      player.maxHp = playerMaxHp(player.level, player.stats.vitalite);
+      refreshHud();
     },
   };
 }
