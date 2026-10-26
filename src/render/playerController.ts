@@ -1,5 +1,6 @@
 import { Engine, FollowCamera, Scene, Vector3 } from "@babylonjs/core";
 import { PLAYER_MOVEMENT } from "../config/player";
+import type { Animator } from "./animator";
 import type { Joystick } from "../ui/joystick";
 import type { LoadedCharacter } from "./character";
 
@@ -12,7 +13,7 @@ function shortestAngleLerp(from: number, to: number, factor: number): number {
 
 /**
  * Fait avancer le personnage selon le joystick, le fait pivoter pour suivre sa direction,
- * et joue l'animation de marche ou de repos.
+ * et prévient l'animateur qu'il marche ou qu'il est à l'arrêt.
  */
 export function createPlayerController(
   scene: Scene,
@@ -20,12 +21,8 @@ export function createPlayerController(
   character: LoadedCharacter,
   camera: FollowCamera,
   joystick: Joystick,
+  animator: Animator,
 ): void {
-  const idle = character.animations["Idle_Loop"];
-  const walk = character.animations["Walk_Loop"];
-  idle?.start(true);
-  let currentlyWalking = false;
-
   scene.onBeforeRenderObservable.add(() => {
     const deltaSeconds = engine.getDeltaTime() / 1000;
     const direction = joystick.getDirection();
@@ -50,15 +47,6 @@ export function createPlayerController(
       );
     }
 
-    if (isMoving !== currentlyWalking) {
-      currentlyWalking = isMoving;
-      if (isMoving) {
-        idle?.stop();
-        walk?.start(true);
-      } else {
-        walk?.stop();
-        idle?.start(true);
-      }
-    }
+    animator.setMoving(isMoving);
   });
 }

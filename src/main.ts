@@ -1,14 +1,20 @@
 import "./style.css";
 import { createScene } from "./render/scene";
 import { loadCharacter, type CharacterGender } from "./render/character";
+import { createAnimator } from "./render/animator";
 import { createPlayerController } from "./render/playerController";
+import { createCombatController } from "./render/combatController";
 import { createJoystick } from "./ui/joystick";
 import { createCameraOrbitControl } from "./ui/cameraOrbit";
 import { attachFpsCounter } from "./ui/fpsCounter";
+import { createHud } from "./ui/hud";
+import { createModeToggle } from "./ui/modeToggle";
+import { createWorldOverlay } from "./ui/worldOverlay";
 
 const canvas = document.getElementById("render-canvas") as HTMLCanvasElement;
 const fpsElement = document.getElementById("fps-counter") as HTMLElement;
 const touchZone = document.getElementById("touch-zone") as HTMLElement;
+const worldOverlayElement = document.getElementById("world-overlay") as HTMLElement;
 const characterSelect = document.getElementById("character-select") as HTMLElement;
 
 async function startGame(gender: CharacterGender): Promise<void> {
@@ -20,9 +26,22 @@ async function startGame(gender: CharacterGender): Promise<void> {
   const character = await loadCharacter(scene, gender);
   camera.lockedTarget = character.root;
 
+  const characterAnimator = createAnimator(character.animations, {
+    idle: "Idle_Loop",
+    walk: "Walk_Loop",
+    attack: "Punch_Jab",
+  });
+
   const joystick = createJoystick(touchZone);
   createCameraOrbitControl(touchZone, camera);
-  createPlayerController(scene, engine, character, camera, joystick);
+  createPlayerController(scene, engine, character, camera, joystick, characterAnimator);
+
+  const overlay = createWorldOverlay(scene, camera, canvas, worldOverlayElement);
+  const hud = createHud();
+  const combat = await createCombatController(scene, engine, character, characterAnimator, overlay, hud);
+
+  const modeToggle = createModeToggle();
+  modeToggle.onChange((combatMode) => combat.setCombatMode(combatMode));
 }
 
 document.getElementById("select-male")?.addEventListener("click", () => void startGame("male"));

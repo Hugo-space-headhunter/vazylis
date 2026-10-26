@@ -14,6 +14,14 @@ Les packs sources téléchargés sont dans `assets/quaternius/` (non suivis par 
 - `public/models/characters/male/` et `.../female/` : le corps de base retravaillé (textures redimensionnées et compressées pour le mobile : environ 1,3 à 1,5 Mo par personnage au lieu de 15 Mo+ dans le pack d'origine).
 - `public/models/animations/locomotion.glb` : la bibliothèque d'animations, copiée telle quelle (pas de perte de qualité sur les animations).
 
+### Monstres (étape 2)
+
+- **Monster Pack Animated** — Quaternius (https://quaternius.itch.io/), licence CC0 (confirmée sur la page du pack : https://creativecommons.org/publicdomain/zero/1.0/). Contient Bat, Dragon, Skeleton et **Slime**, avec animations (attaque, mort, repos, marche). Fourni en FBX/OBJ/Blend (pas de glTF) : converti en `.glb` avec l'outil `fbx2gltf` pour pouvoir le charger dans Babylon.js.
+  - Le **Slime** est utilisé pour le **Pomelin** (boule qui charge le joueur) : `public/models/monsters/pomelin/slime.glb`.
+  - Bat, Dragon et Skeleton ne sont pas encore utilisés, mais pourront servir plus tard (par exemple pour les chauves-souris de la zone 2 ou les squelettes de la zone 3).
+- **Cochonnet de suie** et **Corbac** : aucun modèle CC0 trouvé chez Quaternius ou KayKit pour l'instant. Formes provisoires simples (sphères), générées dans `src/render/monster.ts`, en attendant un modèle adapté.
+- Pack écarté : **Bestiary - Dungeon Monsters Kit** (Quaternius) — téléchargé mais non utilisé, car il est sous licence « Quaternius Asset License (QAL) » (pas CC0) et ne contient aucune animation.
+
 ### Terrain de test (étape 0-1)
 
 - `src/render/scene.ts` utilise des formes de base de Babylon.js (sol et quelques cubes-repères) comme décor provisoire, en attendant les vrais décors des zones (étape 6).
