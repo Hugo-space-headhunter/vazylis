@@ -3,3 +3,8 @@ dist
 .DS_Store
 *.local
 *.tsbuildinfo
+
+# Packs sources téléchargés (CC0) : trop volumineux pour git.
+# Seuls les fichiers retravaillés et utilisés par le jeu (dans public/models/)
+# sont suivis par git ; voir ASSETS.md.
+assets/
