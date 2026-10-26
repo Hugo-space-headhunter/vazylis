@@ -11,6 +11,6 @@ export const PLAYER_COMBAT = {
 };
 
 export const PLAYER_HEALTH = {
-  base: 100,
+  base: 200,
   perLevel: 15,
 };

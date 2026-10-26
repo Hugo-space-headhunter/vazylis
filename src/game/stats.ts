@@ -1,4 +1,4 @@
-import { COMBAT_CAPS, POINTS_PER_LEVEL, STAT_EFFECTS } from "../config/stats";
+import { BASE_MANA, COMBAT_CAPS, POINTS_PER_LEVEL, STAT_EFFECTS } from "../config/stats";
 
 export interface PlayerStats {
   force: number;
@@ -53,7 +53,7 @@ export function defense(vitalite: number): number {
 
 /** Points de mana maximum (inutilisés dans le prototype, juste affichés). */
 export function maxMana(intelligence: number): number {
-  return intelligence * STAT_EFFECTS.intelligenceManaPerPoint;
+  return BASE_MANA + intelligence * STAT_EFFECTS.intelligenceManaPerPoint;
 }
 
 /**

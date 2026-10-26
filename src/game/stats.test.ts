@@ -70,6 +70,10 @@ describe("maxHp et defense", () => {
 });
 
 describe("maxMana", () => {
+  it("vaut 150 sans Intelligence (mana de base)", () => {
+    expect(maxMana(0)).toBe(150);
+  });
+
   it("augmente avec l'Intelligence", () => {
     expect(maxMana(10)).toBeGreaterThan(maxMana(0));
   });

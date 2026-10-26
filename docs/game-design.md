@@ -127,9 +127,10 @@ Toutes les valeurs sont dans le fichier de configuration et se règlent en jouan
 - **Dégâts de l'arme** = (10 + 3 × niveau de l'item) × multiplicateur de rareté, plus le bonus d'amélioration.
 - **Coup critique** : chance = 5 % + 0,1 % × Agilité + bonus des items (plafond 60 %) ; dégâts ×1,5 (×2 à deux mains), plus les bonus de dégâts critiques.
 - **Vitesse d'attaque** = vitesse de base de l'arme × (1 + 0,4 % × Agilité + bonus des items), plafonnée à ×2,5.
-- **Points de vie** = 100 + 15 × niveau + 12 × Vitalité + bonus des items.
+- **Points de vie** = 200 + 15 × niveau + 12 × Vitalité + bonus des items.
 - **Défense** = armure des items + 0,5 × Vitalité.
 - **Réduction des dégâts subis** = défense ÷ (défense + 50 × niveau de l'attaquant), plafonnée à 75 %.
+- **Mana** = 150 + 5 × Intelligence (inutilisé dans le prototype, prévu pour la magie).
 
 ### Calibrage des monstres
 

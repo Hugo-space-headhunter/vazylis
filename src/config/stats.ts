@@ -29,3 +29,6 @@ export const COMBAT_CAPS = {
 /** Dégâts "à mains nues", en attendant les vraies armes (étape 4). */
 export const UNARMED_DAMAGE = 5;
 export const CRITICAL_DAMAGE_MULTIPLIER = 1.5;
+
+/** Mana de base, avant le bonus d'Intelligence (inutilisé dans le prototype, prévu pour la magie). */
+export const BASE_MANA = 150;

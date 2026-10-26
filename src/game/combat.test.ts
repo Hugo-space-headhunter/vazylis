@@ -12,6 +12,10 @@ describe("playerBaseDamage", () => {
 });
 
 describe("playerMaxHp", () => {
+  it("vaut 215 au niveau 1 sans Vitalité (200 de base + 15 du niveau)", () => {
+    expect(playerMaxHp(1, 0)).toBe(215);
+  });
+
   it("augmente avec le niveau", () => {
     expect(playerMaxHp(10, 0)).toBeGreaterThan(playerMaxHp(1, 0));
   });
