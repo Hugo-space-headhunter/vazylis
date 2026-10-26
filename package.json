@@ -1,0 +1,20 @@
+{
+  "name": "vazylis",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^7.54.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vite": "^6.4.0",
+    "vitest": "^5.0.5"
+  }
+}
