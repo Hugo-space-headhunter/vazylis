@@ -10,3 +10,4 @@ Notes et améliorations hors périmètre de l'étape en cours, à reprendre plus
 - Un monstre tué disparaît immédiatement (pas d'animation de mort visible), pour rester simple et robuste. On pourrait la réactiver plus tard (le Pomelin a déjà une vraie animation de mort disponible).
 - Pas de recherche de chemin (pathfinding) pour les monstres qui chargent : ils foncent en ligne droite vers le joueur, donc ils peuvent rester bloqués contre un obstacle. À revoir quand le terrain aura de vrais obstacles.
 - Les monstres passifs touchés restent "engagés" (ils ripostent) jusqu'à leur mort, même si le joueur s'éloigne. Pas de désengagement après un délai pour l'instant.
+- Hugo a déjà téléchargé des packs d'**armes** et de **décors de donjon** (Quaternius). Pas encore déposés dans `assets/quaternius/` ni utilisés : à reprendre aux étapes 4 (armes, butin) et 6/8 (décors de zone et de donjon). Penser à vérifier leur licence (CC0) à ce moment-là.
