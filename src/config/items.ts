@@ -23,6 +23,8 @@ export interface WeaponFamily {
   gripScale: number;
   gripPosition: { x: number; y: number; z: number };
   gripRotationDeg: { x: number; y: number; z: number };
+  /** Animation jouée par le personnage quand il attaque avec cette arme. */
+  attackAnimation: string;
   critChanceBonus: number;
   critMultiplierOverride?: number;
   ignoreDefensePercent: number;
@@ -38,8 +40,9 @@ export const WEAPON_FAMILIES: Record<WeaponFamilyId, WeaponFamily> = {
     affinity: "agilite",
     modelUrl: "models/weapons/rogues_dagger_low.glb",
     gripScale: 0.35,
-    gripPosition: { x: 0, y: 0.1, z: 0 },
-    gripRotationDeg: { x: 0, y: 0, z: 0 },
+    gripPosition: { x: 0, y: 0, z: 0 },
+    gripRotationDeg: { x: 0, y: 0, z: 90 },
+    attackAnimation: "Punch_Jab",
     critChanceBonus: 0.1,
     ignoreDefensePercent: 0,
     blockChance: 0,
@@ -54,6 +57,7 @@ export const WEAPON_FAMILIES: Record<WeaponFamilyId, WeaponFamily> = {
     gripScale: 0.8,
     gripPosition: { x: 0, y: 0, z: 0 },
     gripRotationDeg: { x: 0, y: 0, z: 0 },
+    attackAnimation: "Punch_Cross",
     critChanceBonus: 0,
     ignoreDefensePercent: 0,
     blockChance: 0,
@@ -66,8 +70,9 @@ export const WEAPON_FAMILIES: Record<WeaponFamilyId, WeaponFamily> = {
     affinity: "force",
     modelUrl: "models/weapons/highland_claymore_low.glb",
     gripScale: 0.9,
-    gripPosition: { x: 0, y: 0.15, z: 0 },
-    gripRotationDeg: { x: 0, y: 0, z: 0 },
+    gripPosition: { x: 0, y: 0, z: 0 },
+    gripRotationDeg: { x: 0, y: 0, z: 90 },
+    attackAnimation: "Sword_Attack",
     critChanceBonus: 0,
     critMultiplierOverride: 2,
     ignoreDefensePercent: 0,
@@ -81,8 +86,9 @@ export const WEAPON_FAMILIES: Record<WeaponFamilyId, WeaponFamily> = {
     affinity: "force",
     modelUrl: "models/weapons/twin_moon_battle_axe_low.glb",
     gripScale: 0.85,
-    gripPosition: { x: 0, y: 0.1, z: 0 },
-    gripRotationDeg: { x: 0, y: 0, z: 0 },
+    gripPosition: { x: 0, y: 0, z: 0 },
+    gripRotationDeg: { x: 0, y: 0, z: 90 },
+    attackAnimation: "Sword_Attack",
     critChanceBonus: 0,
     ignoreDefensePercent: 0.15,
     blockChance: 0,
@@ -96,8 +102,9 @@ export const WEAPON_FAMILIES: Record<WeaponFamilyId, WeaponFamily> = {
     modelUrl: "models/weapons/knights_longsword_low.glb",
     offHandModelUrl: null,
     gripScale: 0.8,
-    gripPosition: { x: 0, y: 0.08, z: 0 },
-    gripRotationDeg: { x: 0, y: 0, z: 0 },
+    gripPosition: { x: 0, y: 0, z: 0 },
+    gripRotationDeg: { x: 0, y: 0, z: 90 },
+    attackAnimation: "Sword_Attack",
     critChanceBonus: 0,
     ignoreDefensePercent: 0,
     blockChance: 0.1,

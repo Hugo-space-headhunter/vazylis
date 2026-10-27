@@ -9,7 +9,8 @@ export interface AnimatorKeys {
 
 export interface Animator {
   setMoving(isMoving: boolean): void;
-  playAttack(onDone?: () => void): void;
+  /** `animationName` permet de jouer une animation d'attaque différente selon l'arme équipée. */
+  playAttack(onDone?: () => void, animationName?: string): void;
   playDeath(onDone?: () => void): void;
 }
 
@@ -55,8 +56,8 @@ export function createAnimator(animations: Record<string, AnimationGroup>, keys:
       state = next;
       animations[loopNameFor(next)]?.start(true);
     },
-    playAttack(onDone) {
-      playOnce(keys.attack, onDone);
+    playAttack(onDone, animationName) {
+      playOnce(animationName ?? keys.attack, onDone);
     },
     playDeath(onDone) {
       playOnce(keys.death, onDone);

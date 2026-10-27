@@ -1,6 +1,6 @@
 import { Engine, Scene, Vector3 } from "@babylonjs/core";
 import { PLAYER_COMBAT } from "../config/combat";
-import { INVENTORY_SIZE, type ArmorSlotId, type WeaponFamilyId } from "../config/items";
+import { INVENTORY_SIZE, WEAPON_FAMILIES, type ArmorSlotId, type WeaponFamilyId } from "../config/items";
 import { MONSTERS } from "../config/monsters";
 import { playerMaxHp, rollBlock, rollPlayerDamage, weaponAttackInterval } from "../game/combat";
 import {
@@ -293,7 +293,11 @@ export async function createCombatController(
       if (playerAttackCooldown <= 0) {
         const target = findNearestTargetInRange();
         if (target) {
-          animator.playAttack();
+          const equippedWeapon = player.inventory.equipment.weapon;
+          const attackAnimation = equippedWeapon
+            ? WEAPON_FAMILIES[equippedWeapon.familyId as WeaponFamilyId].attackAnimation
+            : undefined;
+          animator.playAttack(undefined, attackAnimation);
           playerAttack(target);
           const baseInterval = weaponAttackInterval(player.inventory.equipment.weapon, PLAYER_COMBAT.attackIntervalSeconds);
           const speedMultiplier = attackSpeedMultiplier(player.stats.agilite);
