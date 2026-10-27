@@ -43,6 +43,7 @@
         </div>
       </div>
       <button id="open-stats" type="button" class="icon-button">Stats</button>
+      <button id="open-inventory" type="button" class="icon-button inventory-button">Sac</button>
       <div id="mode-buttons">
         <button id="mode-combat" type="button" class="mode-button">Arme</button>
         <button id="mode-move" type="button" class="mode-button active">Pied</button>
@@ -80,6 +81,22 @@
             <button id="stats-validate" type="button" class="stats-action-btn primary">Valider</button>
           </div>
           <p class="stats-warning">Une fois validés, les points sont définitifs.</p>
+        </div>
+      </div>
+      <div id="inventory-panel" class="hidden">
+        <div class="stats-panel-box inventory-box">
+          <h2>Sac à dos</h2>
+          <div id="inventory-equipped"></div>
+          <div id="inventory-grid" class="inventory-grid"></div>
+          <div id="item-detail" class="item-detail hidden">
+            <div id="item-detail-name" class="item-detail-name"></div>
+            <div id="item-detail-stats" class="item-detail-stats"></div>
+            <div class="stats-actions">
+              <button id="item-detail-secondary" type="button" class="stats-action-btn"></button>
+              <button id="item-detail-primary" type="button" class="stats-action-btn primary"></button>
+            </div>
+          </div>
+          <button id="inventory-close" type="button" class="stats-action-btn inventory-close-btn">Fermer</button>
         </div>
       </div>
       <div id="character-select">

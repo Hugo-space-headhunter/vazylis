@@ -116,6 +116,11 @@ body {
   color: #ff6b6b;
 }
 
+.damage-number.blocked {
+  font-size: 15px;
+  color: #9fd3ff;
+}
+
 .damage-number.rising {
   transform: translate(-50%, -140%);
   opacity: 0;
@@ -212,7 +217,7 @@ body {
   font-weight: bold;
 }
 
-#open-stats {
+.icon-button {
   position: absolute;
   top: calc(env(safe-area-inset-top, 0px) + 100px);
   left: calc(env(safe-area-inset-left, 0px) + 10px);
@@ -226,7 +231,12 @@ body {
   pointer-events: auto;
 }
 
-#stats-panel {
+.icon-button.inventory-button {
+  top: calc(env(safe-area-inset-top, 0px) + 144px);
+}
+
+#stats-panel,
+#inventory-panel {
   position: absolute;
   inset: 0;
   display: flex;
@@ -237,7 +247,8 @@ body {
   pointer-events: auto;
 }
 
-#stats-panel.hidden {
+#stats-panel.hidden,
+#inventory-panel.hidden {
   display: none;
 }
 
@@ -327,6 +338,117 @@ body {
   font-size: 11px;
   text-align: center;
   color: #a899b8;
+}
+
+.inventory-box {
+  width: 320px;
+  max-height: 82vh;
+  overflow-y: auto;
+}
+
+#inventory-equipped {
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(184, 134, 63, 0.4);
+  padding-bottom: 8px;
+}
+
+.equipped-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.equipped-row .equipped-slot-name {
+  color: #a899b8;
+}
+
+.equipped-row .equipped-item-name {
+  font-weight: bold;
+}
+
+.equipped-row.filled {
+  background: rgba(243, 213, 139, 0.08);
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.item-slot {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  border: 2px solid rgba(184, 134, 63, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: bold;
+  text-align: center;
+  color: #140d1f;
+  line-height: 1.1;
+  padding: 2px;
+}
+
+.item-slot.empty {
+  border-style: dashed;
+  border-color: rgba(184, 134, 63, 0.25);
+}
+
+.item-slot.rarity-standard {
+  background: #9a9a9a;
+}
+.item-slot.rarity-argente {
+  background: #cfd6dd;
+}
+.item-slot.rarity-dore {
+  background: #e8c35a;
+}
+.item-slot.rarity-epique {
+  background: #5b7fe0;
+  color: #fff;
+}
+.item-slot.rarity-mythique {
+  background: #c0392b;
+  color: #fff;
+}
+.item-slot.rarity-transcendant {
+  background: #fdfaf0;
+  box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.8);
+}
+
+.item-detail {
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.item-detail.hidden {
+  display: none;
+}
+
+.item-detail-name {
+  font-weight: bold;
+  color: #f3d58b;
+  margin-bottom: 6px;
+}
+
+.item-detail-stats {
+  font-size: 12px;
+  color: #d8c7e8;
+  white-space: pre-line;
+  margin-bottom: 8px;
+}
+
+.inventory-close-btn {
+  width: 100%;
+  margin-top: 4px;
 }
 
 #character-select {

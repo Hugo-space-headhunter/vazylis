@@ -1,7 +1,21 @@
 import { Engine, Scene, Vector3 } from "@babylonjs/core";
 import { PLAYER_COMBAT } from "../config/combat";
+import { INVENTORY_SIZE, type ArmorSlotId, type WeaponFamilyId } from "../config/items";
 import { MONSTERS } from "../config/monsters";
-import { playerMaxHp, rollPlayerDamage } from "../game/combat";
+import { playerMaxHp, rollBlock, rollPlayerDamage, weaponAttackInterval } from "../game/combat";
+import {
+  addItem,
+  createEmptyInventory,
+  equipItem,
+  findItem,
+  recycleItem,
+  unequipArmor,
+  unequipWeapon,
+  type InventoryItem,
+  type InventoryState,
+} from "../game/inventory";
+import { armorItemDefense } from "../game/item";
+import { generateLootItem, rollLootRarities } from "../game/loot";
 import { applyXpGain, requiredXpForLevel, xpGainForKill } from "../game/progression";
 import {
   EMPTY_STATS,
@@ -16,6 +30,7 @@ import type { Animator } from "./animator";
 import type { LoadedCharacter } from "./character";
 import { playLevelUpEffect } from "./levelUpEffect";
 import { spawnMonster, type MonsterInstance } from "./monsterInstance";
+import { createWeaponVisual } from "./weaponAttachment";
 import type { Hud } from "../ui/hud";
 import type { WorldOverlay } from "../ui/worldOverlay";
 
@@ -27,6 +42,7 @@ export interface PlayerRuntime {
   maxHp: number;
   combatMode: boolean;
   stats: PlayerStats;
+  inventory: InventoryState;
 }
 
 const SPAWN_POINTS: { monsterId: keyof typeof MONSTERS; position: Vector3 }[] = [
@@ -46,6 +62,13 @@ export interface CombatController {
   getStatsSnapshot(): { level: number; stats: PlayerStats; availablePoints: number };
   /** Ajoute les points fraîchement validés aux statistiques du joueur. */
   applyStatPoints(spent: PlayerStats): void;
+  getInventory(): InventoryState;
+  equip(instanceId: string): void;
+  unequipWeapon(): void;
+  unequipArmor(slotId: ArmorSlotId): void;
+  recycle(instanceId: string): void;
+  /** Prévenu à chaque changement du sac (butin, équipement, recyclage) pour rafraîchir la fenêtre si elle est ouverte. */
+  onInventoryChange(callback: (inventory: InventoryState) => void): void;
 }
 
 export async function createCombatController(
@@ -62,6 +85,9 @@ export async function createCombatController(
     ),
   );
 
+  const weaponVisual = createWeaponVisual(scene, character);
+  let nextItemId = 1;
+
   const player: PlayerRuntime = {
     name: "Vazylien",
     level: 1,
@@ -70,8 +96,21 @@ export async function createCombatController(
     maxHp: playerMaxHp(1, 0),
     combatMode: false,
     stats: { ...EMPTY_STATS },
+    inventory: createEmptyInventory(),
   };
   let playerAttackCooldown = 0;
+  let inventoryChangeCallback: ((inventory: InventoryState) => void) | null = null;
+
+  function notifyInventoryChange(): void {
+    inventoryChangeCallback?.(player.inventory);
+  }
+
+  function totalArmorDefense(): number {
+    return Object.values(player.inventory.equipment.armor).reduce((sum, item) => {
+      if (!item) return sum;
+      return sum + armorItemDefense(item.level, item.rarity, item.quality);
+    }, 0);
+  }
 
   function refreshHud(): void {
     hud.update({
@@ -88,7 +127,17 @@ export async function createCombatController(
 
   function damagePlayer(rawAmount: number, attackerLevel: number): void {
     if (player.hp <= 0) return;
-    const amount = Math.round(applyDamageReduction(rawAmount, defense(player.stats.vitalite), attackerLevel));
+
+    if (rollBlock(player.inventory.equipment.weapon, Math.random())) {
+      overlay.showDamageNumber(character.root.position.add(new Vector3(0, PLAYER_HEAD_HEIGHT, 0)), 0, {
+        onPlayer: true,
+        blocked: true,
+      });
+      return;
+    }
+
+    const totalDefense = defense(player.stats.vitalite) + totalArmorDefense();
+    const amount = Math.round(applyDamageReduction(rawAmount, totalDefense, attackerLevel));
     player.hp = Math.max(0, player.hp - amount);
     overlay.showDamageNumber(character.root.position.add(new Vector3(0, PLAYER_HEAD_HEIGHT, 0)), amount, {
       onPlayer: true,
@@ -105,6 +154,19 @@ export async function createCombatController(
     refreshHud();
   }
 
+  function dropLoot(monsterLevel: number): void {
+    const rarities = rollLootRarities([Math.random(), Math.random(), Math.random(), Math.random()]);
+    for (const rarity of rarities) {
+      const generated = generateLootItem(monsterLevel, rarity, Math.random(), Math.random(), Math.random());
+      const item: InventoryItem = { ...generated, instanceId: `item-${nextItemId++}` };
+      const result = addItem(player.inventory, item, INVENTORY_SIZE);
+      player.inventory = result.state;
+    }
+    if (rarities.length > 0) {
+      notifyInventoryChange();
+    }
+  }
+
   function killMonster(monster: MonsterInstance): void {
     monster.alive = false;
     monster.engaged = false;
@@ -112,6 +174,8 @@ export async function createCombatController(
     monster.animator.playDeath();
     monster.setVisible(false);
     monster.respawnCooldown = monster.definition.respawnSeconds;
+
+    dropLoot(monster.definition.level);
 
     const xpGained = xpGainForKill(monster.definition.baseXp, monster.definition.level, player.level);
     const result = applyXpGain({ level: player.level, xp: player.xp }, xpGained);
@@ -134,7 +198,7 @@ export async function createCombatController(
   }
 
   function playerAttack(target: MonsterInstance): void {
-    const roll = rollPlayerDamage(player.stats, Math.random());
+    const roll = rollPlayerDamage(player.stats, player.inventory.equipment.weapon, Math.random());
     target.hp -= roll.amount;
     target.engaged = true;
     overlay.showDamageNumber(target.headPosition(), roll.amount, { critical: roll.isCritical });
@@ -231,8 +295,9 @@ export async function createCombatController(
         if (target) {
           animator.playAttack();
           playerAttack(target);
+          const baseInterval = weaponAttackInterval(player.inventory.equipment.weapon, PLAYER_COMBAT.attackIntervalSeconds);
           const speedMultiplier = attackSpeedMultiplier(player.stats.agilite);
-          playerAttackCooldown = PLAYER_COMBAT.attackIntervalSeconds / speedMultiplier;
+          playerAttackCooldown = baseInterval / speedMultiplier;
         }
       }
     }
@@ -256,6 +321,37 @@ export async function createCombatController(
       player.stats.intelligence += spent.intelligence;
       player.maxHp = playerMaxHp(player.level, player.stats.vitalite);
       refreshHud();
+    },
+    getInventory() {
+      return player.inventory;
+    },
+    equip(instanceId: string) {
+      const item = findItem(player.inventory, instanceId);
+      if (!item) return;
+      player.inventory = equipItem(player.inventory, instanceId);
+      if (item.kind === "weapon") {
+        void weaponVisual.setWeapon(item.familyId as WeaponFamilyId);
+      }
+      refreshHud();
+      notifyInventoryChange();
+    },
+    unequipWeapon() {
+      player.inventory = unequipWeapon(player.inventory, INVENTORY_SIZE);
+      void weaponVisual.setWeapon(null);
+      refreshHud();
+      notifyInventoryChange();
+    },
+    unequipArmor(slotId: ArmorSlotId) {
+      player.inventory = unequipArmor(player.inventory, slotId, INVENTORY_SIZE);
+      refreshHud();
+      notifyInventoryChange();
+    },
+    recycle(instanceId: string) {
+      player.inventory = recycleItem(player.inventory, instanceId);
+      notifyInventoryChange();
+    },
+    onInventoryChange(callback) {
+      inventoryChangeCallback = callback;
     },
   };
 }

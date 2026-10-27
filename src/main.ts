@@ -1,4 +1,5 @@
 import "./style.css";
+import { INVENTORY_SIZE } from "./config/items";
 import { createScene } from "./render/scene";
 import { loadCharacter, type CharacterGender } from "./render/character";
 import { createAnimator } from "./render/animator";
@@ -8,6 +9,7 @@ import { createJoystick } from "./ui/joystick";
 import { createCameraOrbitControl } from "./ui/cameraOrbit";
 import { attachFpsCounter } from "./ui/fpsCounter";
 import { createHud } from "./ui/hud";
+import { createInventoryPanel } from "./ui/inventoryPanel";
 import { createModeToggle } from "./ui/modeToggle";
 import { createStatsPanel } from "./ui/statsPanel";
 import { createWorldOverlay } from "./ui/worldOverlay";
@@ -18,6 +20,7 @@ const touchZone = document.getElementById("touch-zone") as HTMLElement;
 const worldOverlayElement = document.getElementById("world-overlay") as HTMLElement;
 const characterSelect = document.getElementById("character-select") as HTMLElement;
 const openStatsButton = document.getElementById("open-stats") as HTMLButtonElement;
+const openInventoryButton = document.getElementById("open-inventory") as HTMLButtonElement;
 
 async function startGame(gender: CharacterGender): Promise<void> {
   characterSelect.style.display = "none";
@@ -50,6 +53,16 @@ async function startGame(gender: CharacterGender): Promise<void> {
   openStatsButton.addEventListener("click", () => {
     const snapshot = combat.getStatsSnapshot();
     statsPanel.open(snapshot.stats, snapshot.availablePoints);
+  });
+
+  const inventoryPanel = createInventoryPanel(INVENTORY_SIZE);
+  inventoryPanel.onEquip((instanceId) => combat.equip(instanceId));
+  inventoryPanel.onUnequipWeapon(() => combat.unequipWeapon());
+  inventoryPanel.onUnequipArmor((slotId) => combat.unequipArmor(slotId));
+  inventoryPanel.onRecycle((instanceId) => combat.recycle(instanceId));
+  combat.onInventoryChange((inventory) => inventoryPanel.refresh(inventory));
+  openInventoryButton.addEventListener("click", () => {
+    inventoryPanel.open(combat.getInventory());
   });
 }
 

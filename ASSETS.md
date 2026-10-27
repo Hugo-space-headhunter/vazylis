@@ -22,6 +22,21 @@ Les packs sources téléchargés sont dans `assets/quaternius/` (non suivis par 
 - **Cochonnet de suie** et **Corbac** : aucun modèle CC0 trouvé chez Quaternius ou KayKit pour l'instant. Formes provisoires simples (sphères), générées dans `src/render/monster.ts`, en attendant un modèle adapté.
 - Pack écarté : **Bestiary - Dungeon Monsters Kit** (Quaternius) — téléchargé mais non utilisé, car il est sous licence « Quaternius Asset License (QAL) » (pas CC0) et ne contient aucune animation.
 
+### Armes (étape 4)
+
+- **3D Fantasy Weapons Pack (version "low", basse définition)** — Polyy (https://polyy.ai), licence CC0 (confirmée dans `LICENSE.txt` du pack). 25 armes fantasy, déjà en `.glb`, pensées pour mobile. Quatre sont utilisées pour l'instant :
+  - **Paire de dagues** → `rogues_dagger_low.glb`
+  - **Épée à deux mains** → `highland_claymore_low.glb`
+  - **Hache à deux mains** → `twin_moon_battle_axe_low.glb`
+  - **Épée et bouclier** → `knights_longsword_low.glb` (le bouclier n'a pas de modèle, voir IDEES.md)
+  - L'**Arc** n'a pas de modèle CC0 disponible dans ce pack (uniquement des armes de mêlée) : pas de visuel pour l'instant, voir IDEES.md.
+  - Fichiers dans `public/models/weapons/` (environ 12 Mo au total, pas encore optimisés comme les personnages — voir IDEES.md).
+- **Armure** : pas encore de modèle visible par pièce (casque, plastron...). Le pack "Modular Character Outfits" (déjà téléchargé, voir plus haut) servira pour ça plus tard. Pour l'instant, l'armure n'apporte qu'un bonus de défense, sans changer l'apparence.
+
+### Décors de donjon (plus tard)
+
+- **KayKit Dungeon Pack 1.1 FREE** — KayKit (https://kaylousberg.itch.io/), licence CC0. Téléchargé et disponible pour les étapes 6/8 (décors de zone et de donjon), pas encore utilisé.
+
 ### Terrain de test (étape 0-1)
 
 - `src/render/scene.ts` utilise des formes de base de Babylon.js (sol et quelques cubes-repères) comme décor provisoire, en attendant les vrais décors des zones (étape 6).

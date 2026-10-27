@@ -3,7 +3,11 @@ import { Camera, Matrix, Scene, Vector3 } from "@babylonjs/core";
 export interface WorldOverlay {
   updateMonsterBar(id: string, worldPosition: Vector3, hpRatio: number): void;
   removeMonsterBar(id: string): void;
-  showDamageNumber(worldPosition: Vector3, amount: number, options?: { critical?: boolean; onPlayer?: boolean }): void;
+  showDamageNumber(
+    worldPosition: Vector3,
+    amount: number,
+    options?: { critical?: boolean; onPlayer?: boolean; blocked?: boolean },
+  ): void;
 }
 
 interface Projected {
@@ -69,7 +73,8 @@ export function createWorldOverlay(
       el.className = "damage-number";
       if (options?.critical) el.classList.add("critical");
       if (options?.onPlayer) el.classList.add("on-player");
-      el.textContent = `-${Math.round(amount)}`;
+      if (options?.blocked) el.classList.add("blocked");
+      el.textContent = options?.blocked ? "Bloqué !" : `-${Math.round(amount)}`;
       el.style.left = `${x}px`;
       el.style.top = `${y}px`;
       container.appendChild(el);

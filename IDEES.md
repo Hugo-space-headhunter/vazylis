@@ -10,6 +10,16 @@ Notes et améliorations hors périmètre de l'étape en cours, à reprendre plus
 - Un monstre tué disparaît immédiatement (pas d'animation de mort visible), pour rester simple et robuste. On pourrait la réactiver plus tard (le Pomelin a déjà une vraie animation de mort disponible).
 - Pas de recherche de chemin (pathfinding) pour les monstres qui chargent : ils foncent en ligne droite vers le joueur, donc ils peuvent rester bloqués contre un obstacle. À revoir quand le terrain aura de vrais obstacles.
 - Les monstres passifs touchés restent "engagés" (ils ripostent) jusqu'à leur mort, même si le joueur s'éloigne. Pas de désengagement après un délai pour l'instant.
-- Hugo a déjà téléchargé des packs d'**armes** et de **décors de donjon** (Quaternius). Pas encore déposés dans `assets/quaternius/` ni utilisés : à reprendre aux étapes 4 (armes, butin) et 6/8 (décors de zone et de donjon). Penser à vérifier leur licence (CC0) à ce moment-là.
+- Le décor de donjon (KayKit) reste à utiliser aux étapes 6/8.
 - Pas de parchemin de réinitialisation des statistiques pour l'instant (prévu "plus tard" dans le document de design) : une fois validés, les points ne peuvent plus être changés du tout dans le prototype.
-- L'affinité d'arme (ex. +0,3 % de dégâts par point d'Agilité avec des dagues) n'est pas encore appliquée : elle arrivera avec les vraies armes à l'étape 4.
+
+### Étape 4 — butin et inventaire
+
+- Pas de vrai glisser-déposer pour équiper un item (choix de Hugo pour aller plus vite) : on touche un item, une fiche s'ouvre avec un bouton Équiper. Le glisser-déposer pourra être ajouté plus tard en finition.
+- L'**Arc** n'a pas de modèle visible (aucune arme à distance dans le pack téléchargé) : il existe comme famille d'arme (stats, vitesse...) mais rien ne s'affiche en main. Pareil pour le **bouclier** de "épée et bouclier" (seule l'épée est visible).
+- L'armure (casque, plastron...) n'a pas encore d'apparence sur le personnage : elle donne un bonus de défense, mais ne change rien visuellement. Le pack "Modular Character Outfits" déjà téléchargé permettra de l'ajouter plus tard.
+- La position de l'arme dans la main est réglée approximativement (à l'œil, dans `src/config/items.ts`, `gripPosition`/`gripRotationDeg`/`gripScale`) : pas parfaitement ajustée pour chaque arme, à peaufiner si ça se voit trop.
+- Le sac à dos (30 cases) ne prévient pas quand il est plein : un item qui tombe alors que le sac est plein est simplement perdu, sans message. À corriger si ça arrive souvent en jouant.
+- Le recyclage ne donne encore ni or ni matériaux (l'économie et les ressources arrivent à l'étape 7) : pour l'instant, recycler détruit juste l'item.
+- "Ignore 15 % de la défense adverse" (particularité de la hache à deux mains) n'a pas d'effet pour l'instant, car les monstres n'ont pas de défense dans le prototype.
+- Les modèles d'armes ajoutent environ 12 Mo (pas encore compressés comme les textures des personnages à l'étape 1) : à optimiser si le chargement devient trop long sur iPhone.
