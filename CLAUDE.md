@@ -32,7 +32,7 @@
 
 ## Assets : règle absolue
 
-- Uniquement des assets sous licence CC0 : Quaternius (https://quaternius.itch.io/) et KayKit (https://kaylousberg.itch.io/). Jamais d'asset payant ni d'asset qui exige de créditer son auteur.
+- Uniquement des assets sous licence CC0 : Quaternius (https://quaternius.itch.io/), KayKit (https://kaylousberg.itch.io/) et Polyy (https://polyy.ai). Jamais d'asset payant ni d'asset qui exige de créditer son auteur. Toute autre source doit être signalée à Hugo avant utilisation.
 - Chaque pack utilisé est noté dans `ASSETS.md` (nom, source, licence).
 - Si un téléchargement est impossible depuis ton environnement, demande à Hugo de télécharger le pack et de le déposer dans `assets/`, en le guidant pas à pas.
 - Si aucun modèle CC0 ne convient, utilise un modèle provisoire simple (formes de base) et note-le dans `ASSETS.md`.
