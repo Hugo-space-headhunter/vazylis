@@ -45,6 +45,14 @@ export interface PlayerRuntime {
   inventory: InventoryState;
 }
 
+/** Les champs du joueur qui doivent être sauvegardés (voir src/save/). */
+export interface PlayerSaveState {
+  level: number;
+  xp: number;
+  stats: PlayerStats;
+  inventory: InventoryState;
+}
+
 const SPAWN_POINTS: { monsterId: keyof typeof MONSTERS; position: Vector3 }[] = [
   { monsterId: "cochonnet", position: new Vector3(3, 0, 3) },
   { monsterId: "cochonnet", position: new Vector3(-4, 0, 6) },
@@ -69,6 +77,10 @@ export interface CombatController {
   recycle(instanceId: string): void;
   /** Prévenu à chaque changement du sac (butin, équipement, recyclage) pour rafraîchir la fenêtre si elle est ouverte. */
   onInventoryChange(callback: (inventory: InventoryState) => void): void;
+  /** Prévenu à chaque changement à sauvegarder (niveau, xp, statistiques, sac). */
+  onStateChange(callback: (state: PlayerSaveState) => void): void;
+  /** Remplace l'état actuel du joueur par une sauvegarde chargée (niveau, xp, stats, sac). */
+  restoreState(saved: PlayerSaveState): void;
 }
 
 export async function createCombatController(
@@ -100,9 +112,35 @@ export async function createCombatController(
   };
   let playerAttackCooldown = 0;
   let inventoryChangeCallback: ((inventory: InventoryState) => void) | null = null;
+  let stateChangeCallback: ((state: PlayerSaveState) => void) | null = null;
 
   function notifyInventoryChange(): void {
     inventoryChangeCallback?.(player.inventory);
+    notifyStateChange();
+  }
+
+  function notifyStateChange(): void {
+    stateChangeCallback?.({
+      level: player.level,
+      xp: player.xp,
+      stats: { ...player.stats },
+      inventory: player.inventory,
+    });
+  }
+
+  /** Les items chargés depuis une sauvegarde ont déjà des identifiants : on évite les doublons. */
+  function syncNextItemIdWithInventory(): void {
+    let maxId = 0;
+    const allItems = [
+      ...player.inventory.items,
+      player.inventory.equipment.weapon,
+      ...Object.values(player.inventory.equipment.armor),
+    ];
+    for (const item of allItems) {
+      const match = item ? /^item-(\d+)$/.exec(item.instanceId) : null;
+      if (match) maxId = Math.max(maxId, Number(match[1]));
+    }
+    nextItemId = Math.max(nextItemId, maxId + 1);
   }
 
   function totalArmorDefense(): number {
@@ -122,6 +160,7 @@ export async function createCombatController(
       xp: player.xp,
       xpToNextLevel: requiredXpForLevel(player.level),
     });
+    notifyStateChange();
   }
   refreshHud();
 
@@ -356,6 +395,23 @@ export async function createCombatController(
     },
     onInventoryChange(callback) {
       inventoryChangeCallback = callback;
+    },
+    onStateChange(callback) {
+      stateChangeCallback = callback;
+    },
+    restoreState(saved: PlayerSaveState) {
+      player.level = saved.level;
+      player.xp = saved.xp;
+      player.stats = { ...saved.stats };
+      player.inventory = saved.inventory;
+      player.maxHp = playerMaxHp(player.level, player.stats.vitalite);
+      player.hp = player.maxHp;
+      syncNextItemIdWithInventory();
+      if (player.inventory.equipment.weapon) {
+        void weaponVisual.setWeapon(player.inventory.equipment.weapon.familyId as WeaponFamilyId);
+      }
+      refreshHud();
+      notifyInventoryChange();
     },
   };
 }

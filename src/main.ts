@@ -13,6 +13,8 @@ import { createInventoryPanel } from "./ui/inventoryPanel";
 import { createModeToggle } from "./ui/modeToggle";
 import { createStatsPanel } from "./ui/statsPanel";
 import { createWorldOverlay } from "./ui/worldOverlay";
+import { createSaveService } from "./save/saveService";
+import { SAVE_VERSION, type SaveData } from "./save/types";
 
 const canvas = document.getElementById("render-canvas") as HTMLCanvasElement;
 const fpsElement = document.getElementById("fps-counter") as HTMLElement;
@@ -22,7 +24,9 @@ const characterSelect = document.getElementById("character-select") as HTMLEleme
 const openStatsButton = document.getElementById("open-stats") as HTMLButtonElement;
 const openInventoryButton = document.getElementById("open-inventory") as HTMLButtonElement;
 
-async function startGame(gender: CharacterGender): Promise<void> {
+const saveService = createSaveService();
+
+async function startGame(gender: CharacterGender, savedState: SaveData | null): Promise<void> {
   characterSelect.style.display = "none";
 
   const { engine, scene, camera } = createScene(canvas);
@@ -45,6 +49,13 @@ async function startGame(gender: CharacterGender): Promise<void> {
   const hud = createHud();
   const combat = await createCombatController(scene, engine, character, characterAnimator, overlay, hud);
 
+  if (savedState) {
+    combat.restoreState(savedState);
+  }
+  combat.onStateChange((state) => {
+    saveService.save({ version: SAVE_VERSION, gender, ...state });
+  });
+
   const modeToggle = createModeToggle();
   modeToggle.onChange((combatMode) => combat.setCombatMode(combatMode));
 
@@ -66,8 +77,15 @@ async function startGame(gender: CharacterGender): Promise<void> {
   });
 }
 
-document.getElementById("select-male")?.addEventListener("click", () => void startGame("male"));
-document.getElementById("select-female")?.addEventListener("click", () => void startGame("female"));
+document.getElementById("select-male")?.addEventListener("click", () => void startGame("male", null));
+document.getElementById("select-female")?.addEventListener("click", () => void startGame("female", null));
+
+saveService.load().then((savedState) => {
+  if (savedState) {
+    void startGame(savedState.gender, savedState);
+  }
+  // Sinon, on laisse l'écran de choix du personnage déjà affiché dans la page.
+});
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

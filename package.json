@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@babylonjs/core": "^7.54.3",
-    "@babylonjs/loaders": "^7.54.3"
+    "@babylonjs/loaders": "^7.54.3",
+    "@supabase/supabase-js": "^2.118.0"
   },
   "devDependencies": {
     "typescript": "^5.7.2",

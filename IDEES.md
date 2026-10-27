@@ -24,3 +24,8 @@ Notes et améliorations hors périmètre de l'étape en cours, à reprendre plus
 - Le recyclage ne donne encore ni or ni matériaux (l'économie et les ressources arrivent à l'étape 7) : pour l'instant, recycler détruit juste l'item.
 - "Ignore 15 % de la défense adverse" (particularité de la hache à deux mains) n'a pas d'effet pour l'instant, car les monstres n'ont pas de défense dans le prototype.
 - Les modèles d'armes ajoutent environ 12 Mo (pas encore compressés comme les textures des personnages à l'étape 1) : à optimiser si le chargement devient trop long sur iPhone.
+
+### Étape 5 — sauvegarde en ligne
+
+- Dès qu'une sauvegarde existe, l'écran "Homme/Femme" n'apparaît plus : impossible de recommencer une nouvelle partie ou de changer de genre sans vider soi-même la sauvegarde (dans les réglages de Safari, ou via un futur bouton "Nouvelle partie"). À ajouter plus tard si Hugo veut tester les deux genres facilement.
+- Pas de message à l'écran si la sauvegarde en ligne échoue (pas de réseau, Supabase indisponible) : le jeu continue normalement grâce à la sauvegarde locale, mais Hugo ne voit aucune indication que la synchronisation en ligne a un problème.
