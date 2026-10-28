@@ -144,3 +144,18 @@ export const MONSTER_LOOT_TABLE: Partial<Record<RarityId, number>> = {
   dore: 0.005,
   epique: 0.0005,
 };
+
+/** Table de butin d'un monstre champion (1 sur 200, voir "Tables de loot"). */
+export const CHAMPION_LOOT_TABLE: Partial<Record<RarityId, number>> = {
+  argente: 1,
+  dore: 1,
+  epique: 0.03,
+};
+
+/** Table de butin d'un sous-boss (voir "Tables de loot"). Les ressources de familier
+ * (60 % en plus) viendront avec le familier, à l'étape 8. */
+export const SOUS_BOSS_LOOT_TABLE: Partial<Record<RarityId, number>> = {
+  argente: 1,
+  dore: 0.3,
+  epique: 0.05,
+};

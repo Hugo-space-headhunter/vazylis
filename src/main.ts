@@ -10,6 +10,7 @@ import { createCameraOrbitControl } from "./ui/cameraOrbit";
 import { attachFpsCounter } from "./ui/fpsCounter";
 import { createHud } from "./ui/hud";
 import { createInventoryPanel } from "./ui/inventoryPanel";
+import { createAfkToggle } from "./ui/afkToggle";
 import { createModeToggle } from "./ui/modeToggle";
 import { createStatsPanel } from "./ui/statsPanel";
 import { createWorldOverlay } from "./ui/worldOverlay";
@@ -43,11 +44,13 @@ async function startGame(gender: CharacterGender, savedState: SaveData | null): 
 
   const joystick = createJoystick(touchZone);
   createCameraOrbitControl(touchZone, camera);
-  createPlayerController(scene, engine, character, camera, joystick, characterAnimator);
 
   const overlay = createWorldOverlay(scene, camera, canvas, worldOverlayElement);
   const hud = createHud();
   const combat = await createCombatController(scene, engine, character, characterAnimator, overlay, hud);
+
+  // Créé après combat : le mode AFK (dans combat) doit pouvoir couper le joystick.
+  createPlayerController(scene, engine, character, camera, joystick, characterAnimator, combat.isAfkActive);
 
   if (savedState) {
     combat.restoreState(savedState);
@@ -58,6 +61,9 @@ async function startGame(gender: CharacterGender, savedState: SaveData | null): 
 
   const modeToggle = createModeToggle();
   modeToggle.onChange((combatMode) => combat.setCombatMode(combatMode));
+
+  const afkToggle = createAfkToggle();
+  afkToggle.onChange((enabled) => combat.setAfkMode(enabled));
 
   const statsPanel = createStatsPanel();
   statsPanel.onValidate((spent) => combat.applyStatPoints(spent));

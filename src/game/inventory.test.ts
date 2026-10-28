@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   addItem,
+  addResource,
   createEmptyInventory,
   equipItem,
   recycleItem,
@@ -97,5 +98,23 @@ describe("recycleItem", () => {
     const base = addItem(createEmptyInventory(), makeWeapon("a"), 10).state;
     const result = recycleItem(base, "a");
     expect(result.items).toHaveLength(0);
+  });
+});
+
+describe("addResource", () => {
+  it("ajoute une ressource inédite", () => {
+    const state = addResource(createEmptyInventory(), "fer", 2);
+    expect(state.resources.fer).toBe(2);
+  });
+
+  it("cumule avec la quantité déjà présente", () => {
+    let state = addResource(createEmptyInventory(), "fer", 2);
+    state = addResource(state, "fer", 3);
+    expect(state.resources.fer).toBe(5);
+  });
+
+  it("ignore une quantité nulle ou négative", () => {
+    const state = addResource(createEmptyInventory(), "fer", 0);
+    expect(state.resources.fer).toBeUndefined();
   });
 });

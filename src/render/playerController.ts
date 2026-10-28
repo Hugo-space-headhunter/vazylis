@@ -14,6 +14,8 @@ function shortestAngleLerp(from: number, to: number, factor: number): number {
 /**
  * Fait avancer le personnage selon le joystick, le fait pivoter pour suivre sa direction,
  * et prévient l'animateur qu'il marche ou qu'il est à l'arrêt.
+ * `isAutopilotActive` : pendant le mode AFK, c'est le combatController qui pilote le
+ * déplacement (vers les monstres), donc le joystick ne doit rien faire.
  */
 export function createPlayerController(
   scene: Scene,
@@ -22,8 +24,10 @@ export function createPlayerController(
   camera: ArcRotateCamera,
   joystick: Joystick,
   animator: Animator,
+  isAutopilotActive: () => boolean,
 ): void {
   scene.onBeforeRenderObservable.add(() => {
+    if (isAutopilotActive()) return;
     const deltaSeconds = engine.getDeltaTime() / 1000;
     const direction = joystick.getDirection();
     const isMoving = Math.abs(direction.x) > 0.05 || Math.abs(direction.y) > 0.05;

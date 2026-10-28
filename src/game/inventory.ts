@@ -1,4 +1,5 @@
 import type { ArmorSlotId } from "../config/items";
+import type { ResourceId } from "../config/resources";
 import type { GeneratedItem } from "./loot";
 
 export interface InventoryItem extends GeneratedItem {
@@ -13,10 +14,19 @@ export interface EquipmentState {
 export interface InventoryState {
   items: InventoryItem[];
   equipment: EquipmentState;
+  /** Minerais, bois, peaux... lâchés par les monstres, pour l'amélioration des items (étape 7). */
+  resources: Partial<Record<ResourceId, number>>;
 }
 
 export function createEmptyInventory(): InventoryState {
-  return { items: [], equipment: { weapon: null, armor: {} } };
+  return { items: [], equipment: { weapon: null, armor: {} }, resources: {} };
+}
+
+/** Ajoute une quantité de ressource (minerai, bois, peau...) au sac. Ne compte pas dans les 30 cases. */
+export function addResource(state: InventoryState, id: ResourceId, quantity: number): InventoryState {
+  if (quantity <= 0) return state;
+  const current = state.resources[id] ?? 0;
+  return { ...state, resources: { ...state.resources, [id]: current + quantity } };
 }
 
 /** Ajoute un item au sac, si une case est libre. */
@@ -49,13 +59,14 @@ export function equipItem(state: InventoryState, instanceId: string): InventoryS
   if (item.kind === "weapon") {
     const previous = state.equipment.weapon;
     const items = previous ? [...itemsWithoutNew, previous] : itemsWithoutNew;
-    return { items, equipment: { ...state.equipment, weapon: item } };
+    return { ...state, items, equipment: { ...state.equipment, weapon: item } };
   }
 
   const slotId = item.familyId as ArmorSlotId;
   const previous = state.equipment.armor[slotId];
   const items = previous ? [...itemsWithoutNew, previous] : itemsWithoutNew;
   return {
+    ...state,
     items,
     equipment: { ...state.equipment, armor: { ...state.equipment.armor, [slotId]: item } },
   };
@@ -66,6 +77,7 @@ export function unequipWeapon(state: InventoryState, capacity: number): Inventor
   if (!state.equipment.weapon) return state;
   if (state.items.length >= capacity) return state;
   return {
+    ...state,
     items: [...state.items, state.equipment.weapon],
     equipment: { ...state.equipment, weapon: null },
   };
@@ -78,7 +90,7 @@ export function unequipArmor(state: InventoryState, slotId: ArmorSlotId, capacit
   if (state.items.length >= capacity) return state;
   const armor = { ...state.equipment.armor };
   delete armor[slotId];
-  return { items: [...state.items, equipped], equipment: { ...state.equipment, armor } };
+  return { ...state, items: [...state.items, equipped], equipment: { ...state.equipment, armor } };
 }
 
 /** Recycle un item du sac : pour l'instant, le détruit simplement (l'économie viendra plus tard). */

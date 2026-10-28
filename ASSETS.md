@@ -17,7 +17,7 @@ Les packs sources téléchargés sont dans `assets/quaternius/` (non suivis par 
 ### Monstres (étape 2)
 
 - **Monster Pack Animated** — Quaternius (https://quaternius.itch.io/), licence CC0 (confirmée sur la page du pack : https://creativecommons.org/publicdomain/zero/1.0/). Contient Bat, Dragon, Skeleton et **Slime**, avec animations (attaque, mort, repos, marche). Fourni en FBX/OBJ/Blend (pas de glTF) : converti en `.glb` avec l'outil `fbx2gltf` pour pouvoir le charger dans Babylon.js.
-  - Le **Slime** est utilisé pour le **Pomelin** (boule qui charge le joueur) : `public/models/monsters/pomelin/slime.glb`.
+  - Le **Slime** est utilisé pour le **Pomelin** (boule qui charge le joueur) : `public/models/monsters/pomelin/slime.glb`. Le sous-boss **Pomelin Royal** (étape 6) réutilise le même modèle, juste agrandi (`scale` dans `src/config/monsters.ts`).
   - Bat, Dragon et Skeleton ne sont pas encore utilisés, mais pourront servir plus tard (par exemple pour les chauves-souris de la zone 2 ou les squelettes de la zone 3).
 - **Cochonnet de suie** et **Corbac** : aucun modèle CC0 trouvé chez Quaternius ou KayKit pour l'instant. Formes provisoires simples (sphères), générées dans `src/render/monster.ts`, en attendant un modèle adapté.
 - Pack écarté : **Bestiary - Dungeon Monsters Kit** (Quaternius) — téléchargé mais non utilisé, car il est sous licence « Quaternius Asset License (QAL) » (pas CC0) et ne contient aucune animation.

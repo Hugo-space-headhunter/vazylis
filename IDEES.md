@@ -29,3 +29,11 @@ Notes et améliorations hors périmètre de l'étape en cours, à reprendre plus
 
 - Dès qu'une sauvegarde existe, l'écran "Homme/Femme" n'apparaît plus : impossible de recommencer une nouvelle partie ou de changer de genre sans vider soi-même la sauvegarde (dans les réglages de Safari, ou via un futur bouton "Nouvelle partie"). À ajouter plus tard si Hugo veut tester les deux genres facilement.
 - Pas de message à l'écran si la sauvegarde en ligne échoue (pas de réseau, Supabase indisponible) : le jeu continue normalement grâce à la sauvegarde locale, mais Hugo ne voit aucune indication que la synchronisation en ligne a un problème.
+
+### Étape 6 — zone 1 complète (1/4 : mécanismes communs)
+
+- **Vazylis** n'est pour l'instant qu'un simple puits de pierre sur une petite place, en attendant un vrai décor de village (prévu "simple pour l'instant" par Hugo, à détailler en finition).
+- **Pomelin Royal** (sous-boss) est juste un Pomelin plus gros et plus résistant : sa capacité spéciale "invoque des Pomelins" décrite dans le document de design n'est pas encore codée. À ajouter si ça manque en jouant.
+- Le **mode AFK** fait marcher le personnage en ligne droite vers le monstre le plus proche (même limite que le déplacement des monstres agressifs, voir plus haut) : pas de recherche de chemin, il peut rester bloqué contre un obstacle. Pas de filtre de recyclage automatique non plus pour l'instant (prévu dans le document de design pour éviter que le sac se remplisse en AFK) : pour l'instant, le butin s'accumule normalement, sans vidage automatique.
+- Les **monstres champions** (1 sur 200) sont testés par la logique (tests automatisés) mais pas encore vus en jeu sur iPhone, vu leur rareté : à surveiller la première fois que Hugo en croise un (taille, aura orange, butin).
+- Les 3 sous-zones suivantes (Bois des Lucioles, Ruines du Guet, Lisière pourpre) utilisent encore le même terrain et les mêmes décors que "Les Prés de Vazylis" : pas de distinction visuelle entre sous-zones pour l'instant, ça viendra avec leurs propres monstres et décors (prochains morceaux de l'étape 6).

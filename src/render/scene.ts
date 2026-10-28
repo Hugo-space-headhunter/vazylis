@@ -40,6 +40,7 @@ export function createScene(canvas: HTMLCanvasElement): GameScene {
   ground.material = groundMaterial;
 
   addLandmarks(scene);
+  addVazylisLandmark(scene);
 
   const camera = new ArcRotateCamera(
     "camera",
@@ -82,4 +83,28 @@ function addLandmarks(scene: Scene): void {
     box.position.set(x, 0.6, z);
     box.material = material;
   }
+}
+
+/**
+ * Repère provisoire pour Vazylis, le point de départ et de retour à la mort (voir
+ * game-design.md, "Économie et mort"). Un simple puits de pierre, en attendant un vrai
+ * décor de village (étape 6, découpage en plusieurs petits morceaux : terrain simple
+ * pour l'instant, à détailler plus tard).
+ */
+function addVazylisLandmark(scene: Scene): void {
+  // Décalé du point (0,0,0) où le personnage apparaît, pour ne pas apparaître dans le puits.
+  const center = new Vector3(0, 0, -3);
+
+  const plazaMaterial = new StandardMaterial("vazylisPlazaMaterial", scene);
+  plazaMaterial.diffuseColor = new Color3(0.32, 0.27, 0.22);
+  const plaza = MeshBuilder.CreateDisc("vazylis-plaza", { radius: 2.4, tessellation: 24 }, scene);
+  plaza.rotation.x = Math.PI / 2;
+  plaza.position.set(center.x, 0.01, center.z);
+  plaza.material = plazaMaterial;
+
+  const stoneMaterial = new StandardMaterial("vazylisWellMaterial", scene);
+  stoneMaterial.diffuseColor = new Color3(0.45, 0.42, 0.4);
+  const well = MeshBuilder.CreateCylinder("vazylis-well", { diameter: 1.4, height: 0.6, tessellation: 16 }, scene);
+  well.position.set(center.x, 0.3, center.z);
+  well.material = stoneMaterial;
 }

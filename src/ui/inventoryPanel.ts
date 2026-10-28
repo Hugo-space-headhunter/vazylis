@@ -1,5 +1,6 @@
 import { ARMOR_SLOTS, WEAPON_FAMILIES, type ArmorSlotId, type WeaponFamilyId } from "../config/items";
 import { RARITIES, type RarityId } from "../config/rarity";
+import { RESOURCES, RESOURCE_IDS } from "../config/resources";
 import { armorItemDefense, weaponItemDamage } from "../game/item";
 import type { InventoryItem, InventoryState } from "../game/inventory";
 
@@ -43,6 +44,7 @@ function shortLabel(item: InventoryItem): string {
 export function createInventoryPanel(capacity: number): InventoryPanel {
   const panel = document.getElementById("inventory-panel") as HTMLElement;
   const equippedContainer = document.getElementById("inventory-equipped") as HTMLElement;
+  const resourcesContainer = document.getElementById("inventory-resources") as HTMLElement;
   const grid = document.getElementById("inventory-grid") as HTMLElement;
   const detail = document.getElementById("item-detail") as HTMLElement;
   const detailName = document.getElementById("item-detail-name") as HTMLElement;
@@ -134,6 +136,18 @@ export function createInventoryPanel(capacity: number): InventoryPanel {
     }
   }
 
+  function renderResources(): void {
+    if (!current) return;
+    resourcesContainer.innerHTML = "";
+    for (const id of RESOURCE_IDS) {
+      const count = current.resources[id] ?? 0;
+      const item = document.createElement("span");
+      item.className = "resource-item";
+      item.innerHTML = `<span class="resource-count">${count}</span> ${RESOURCES[id].name}`;
+      resourcesContainer.appendChild(item);
+    }
+  }
+
   function renderGrid(): void {
     if (!current) return;
     grid.innerHTML = "";
@@ -157,6 +171,7 @@ export function createInventoryPanel(capacity: number): InventoryPanel {
 
   function renderAll(): void {
     renderEquipped();
+    renderResources();
     renderGrid();
     renderDetail();
   }

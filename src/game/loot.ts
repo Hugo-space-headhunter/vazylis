@@ -1,5 +1,6 @@
 import { ARMOR_SLOTS, MONSTER_LOOT_TABLE, WEAPON_FAMILIES, type ArmorSlotId, type WeaponFamilyId } from "../config/items";
 import type { RarityId } from "../config/rarity";
+import { RESOURCE_DROP, RESOURCE_IDS, type ResourceDropConfig, type ResourceId } from "../config/resources";
 
 const RARITY_ORDER: RarityId[] = ["standard", "argente", "dore", "epique"];
 const WEAPON_FAMILY_IDS = Object.keys(WEAPON_FAMILIES) as WeaponFamilyId[];
@@ -20,16 +21,43 @@ export interface GeneratedItem {
  * Détermine les raretés obtenues sur un monstre : chaque palier (standard, argenté, doré, épique)
  * est un tirage indépendant, donc un même kill peut donner plusieurs items, ou aucun.
  * `randomValues` fournit un nombre entre 0 et 1 par palier, dans l'ordre de RARITY_ORDER.
+ * `lootTable` permet d'utiliser une autre table (monstre champion, sous-boss...), celle des
+ * monstres standards par défaut.
  */
-export function rollLootRarities(randomValues: number[]): RarityId[] {
+export function rollLootRarities(
+  randomValues: number[],
+  lootTable: Partial<Record<RarityId, number>> = MONSTER_LOOT_TABLE,
+): RarityId[] {
   const results: RarityId[] = [];
   RARITY_ORDER.forEach((rarity, index) => {
-    const chance = MONSTER_LOOT_TABLE[rarity] ?? 0;
+    const chance = lootTable[rarity] ?? 0;
     if ((randomValues[index] ?? 1) < chance) {
       results.push(rarity);
     }
   });
   return results;
+}
+
+export interface ResourceDrop {
+  id: ResourceId;
+  quantity: number;
+}
+
+/**
+ * Détermine si une ressource tombe (minerai, bois, peau), et en quelle quantité.
+ * `dropConfig` permet d'utiliser un taux garanti (champion, sous-boss) à la place du taux normal.
+ */
+export function rollResourceDrop(
+  chanceRandom: number,
+  pickRandom: number,
+  quantityRandom: number,
+  dropConfig: ResourceDropConfig = RESOURCE_DROP,
+): ResourceDrop | null {
+  if (chanceRandom >= dropConfig.chance) return null;
+  const id = RESOURCE_IDS[Math.floor(pickRandom * RESOURCE_IDS.length) % RESOURCE_IDS.length];
+  const span = dropConfig.max - dropConfig.min + 1;
+  const quantity = Math.min(dropConfig.max, dropConfig.min + Math.floor(quantityRandom * span));
+  return { id, quantity };
 }
 
 /** Qualité d'un item : tirée entre 70 % et 100 % de son maximum. */
