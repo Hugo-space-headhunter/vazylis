@@ -9,6 +9,8 @@ import {
 } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
 import type { MonsterDefinition } from "../config/monsters";
+import { enableAnimationBlending } from "./animationUtils";
+import { simplifyMaterials } from "./materialUtils";
 import { makeRotatable } from "./transformUtils";
 
 export interface MonsterVisual {
@@ -34,15 +36,19 @@ async function loadMonsterModel(scene: Scene, definition: MonsterDefinition): Pr
   const result = await SceneLoader.ImportMeshAsync("", `${import.meta.env.BASE_URL}${folder}`, file, scene);
   const root = result.meshes[0];
   makeRotatable(root);
+  simplifyMaterials(root);
   root.scaling.setAll(definition.scale);
 
   const animations: Record<string, AnimationGroup> = {};
   for (const group of result.animationGroups) {
     group.stop();
-    // Les noms exportés ressemblent à "Armature|Slime_Attack" : on ne garde que "Attack".
-    const shortName = group.name.split("_").pop() ?? group.name;
+    // Certains modèles (convertis depuis FBX, comme le Slime) exportent des noms du genre
+    // "Armature|Slime_Attack" : on ne garde que "Attack". Les modèles en glTF natif (les
+    // autres monstres) ont déjà des noms propres ("Idle", "Bite_Front"...), à garder tels quels.
+    const shortName = group.name.includes("|") ? group.name.split("_").pop() ?? group.name : group.name;
     animations[shortName] = group;
   }
+  enableAnimationBlending(animations);
 
   return { root, animations };
 }

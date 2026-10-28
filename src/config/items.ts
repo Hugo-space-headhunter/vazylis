@@ -42,7 +42,8 @@ export const WEAPON_FAMILIES: Record<WeaponFamilyId, WeaponFamily> = {
     gripScale: 0.35,
     gripPosition: { x: 0, y: 0, z: 0 },
     gripRotationDeg: { x: 0, y: 0, z: 90 },
-    attackAnimation: "Punch_Jab",
+    // Même animation que les autres armes de corps à corps (voir le commentaire plus bas).
+    attackAnimation: "Sword_Attack",
     critChanceBonus: 0.1,
     ignoreDefensePercent: 0,
     blockChance: 0,
@@ -72,6 +73,9 @@ export const WEAPON_FAMILIES: Record<WeaponFamilyId, WeaponFamily> = {
     gripScale: 0.9,
     gripPosition: { x: 0, y: 0.05, z: 0 },
     gripRotationDeg: { x: 0, y: 90, z: 90 },
+    // Les armes de corps à corps partagent toutes la même animation de coup (un seul
+    // mouvement de base dans la bibliothèque d'animations, voir ASSETS.md) : plus cohérent
+    // qu'un mélange de coups de poing et de coups d'épée selon l'arme.
     attackAnimation: "Sword_Attack",
     critChanceBonus: 0,
     critMultiplierOverride: 2,

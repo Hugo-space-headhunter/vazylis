@@ -30,17 +30,27 @@ export function createScene(canvas: HTMLCanvasElement): GameScene {
   const engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
   const scene = new Scene(engine);
   scene.clearColor = new Color4(0.08, 0.05, 0.12, 1);
+  // Évite qu'un matériau PBR oublié (voir materialUtils.ts) ne tombe complètement au noir
+  // faute de lumière ambiante (par défaut, Babylon.js met cette couleur à noir).
+  scene.ambientColor = new Color3(0.3, 0.3, 0.3);
 
   const light = new HemisphericLight("light", new Vector3(0, 1, 0.3), scene);
   light.intensity = 0.9;
+  // Un peu de lumière "par en dessous" pour adoucir les faces à l'ombre (sinon elles
+  // tombent au noir complet, et les modèles ressemblent à de simples silhouettes).
+  light.groundColor = new Color3(0.25, 0.22, 0.3);
 
-  const ground = MeshBuilder.CreateGround("ground", { width: 40, height: 40 }, scene);
+  // Assez grand pour couvrir Les Prés de Vazylis ET Le Bois des Lucioles (jusqu'à x=35),
+  // sinon le personnage marche dans le vide une fois sorti de la première sous-zone.
+  const ground = MeshBuilder.CreateGround("ground", { width: 90, height: 40 }, scene);
+  ground.position.x = 15;
   const groundMaterial = new StandardMaterial("groundMaterial", scene);
   groundMaterial.diffuseColor = new Color3(0.2, 0.17, 0.25);
   ground.material = groundMaterial;
 
   addLandmarks(scene);
   addVazylisLandmark(scene);
+  addBoisDesLucioles(scene);
 
   const camera = new ArcRotateCamera(
     "camera",
@@ -107,4 +117,53 @@ function addVazylisLandmark(scene: Scene): void {
   const well = MeshBuilder.CreateCylinder("vazylis-well", { diameter: 1.4, height: 0.6, tessellation: 16 }, scene);
   well.position.set(center.x, 0.3, center.z);
   well.material = stoneMaterial;
+}
+
+/** Centre approximatif de la zone de spawn de la sous-zone 2 (voir SPAWN_POINTS dans combatController.ts). */
+const BOIS_DES_LUCIOLES_CENTER = new Vector3(28, 0, 0.5);
+
+/**
+ * Premier décor distinctif pour une sous-zone : un sol plus vert (sous le sol de base) et
+ * quelques arbres simples tout autour, pour qu'on sente qu'on est arrivé dans une forêt.
+ * Toujours des formes de base (voir ASSETS.md) : un vrai décor de forêt viendra plus tard.
+ */
+function addBoisDesLucioles(scene: Scene): void {
+  const patchMaterial = new StandardMaterial("boisPatchMaterial", scene);
+  patchMaterial.diffuseColor = new Color3(0.15, 0.22, 0.13);
+  const patch = MeshBuilder.CreateGround(
+    "bois-des-lucioles-patch",
+    { width: 32, height: 26 },
+    scene,
+  );
+  patch.position.set(BOIS_DES_LUCIOLES_CENTER.x, 0.01, BOIS_DES_LUCIOLES_CENTER.z);
+  patch.material = patchMaterial;
+
+  const trunkMaterial = new StandardMaterial("treeTrunkMaterial", scene);
+  trunkMaterial.diffuseColor = new Color3(0.28, 0.2, 0.14);
+  const leavesMaterial = new StandardMaterial("treeLeavesMaterial", scene);
+  leavesMaterial.diffuseColor = new Color3(0.12, 0.3, 0.14);
+
+  // Autour du bord de la clairière, pour ne pas gêner le passage vers les monstres.
+  const treeOffsets: [number, number][] = [
+    [-14, -11], [-9, -12], [-2, -12], [5, -11], [12, -10],
+    [-14, 11], [-9, 12], [-2, 12], [5, 11], [12, 10],
+    [-15, 0], [-15, 6], [-15, -6], [15, 0], [15, 7], [15, -7],
+  ];
+
+  treeOffsets.forEach(([dx, dz], index) => {
+    const x = BOIS_DES_LUCIOLES_CENTER.x + dx;
+    const z = BOIS_DES_LUCIOLES_CENTER.z + dz;
+
+    const trunk = MeshBuilder.CreateCylinder(`tree-trunk-${index}`, { diameter: 0.4, height: 1.6 }, scene);
+    trunk.position.set(x, 0.8, z);
+    trunk.material = trunkMaterial;
+
+    const leaves = MeshBuilder.CreateCylinder(
+      `tree-leaves-${index}`,
+      { diameterTop: 0, diameterBottom: 2.2, height: 2.6, tessellation: 8 },
+      scene,
+    );
+    leaves.position.set(x, 2.9, z);
+    leaves.material = leavesMaterial;
+  });
 }

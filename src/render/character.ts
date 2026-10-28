@@ -1,5 +1,7 @@
 import { AbstractMesh, AnimationGroup, Scene, SceneLoader, Skeleton } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
+import { enableAnimationBlending } from "./animationUtils";
+import { simplifyMaterials } from "./materialUtils";
 import { makeRotatable } from "./transformUtils";
 
 export type CharacterGender = "male" | "female";
@@ -26,6 +28,7 @@ export async function loadCharacter(scene: Scene, gender: CharacterGender): Prom
   const result = await SceneLoader.ImportMeshAsync("", characterUrl, file, scene);
   const root = result.meshes[0];
   makeRotatable(root);
+  simplifyMaterials(root);
   const skeleton = result.skeletons[0] ?? null;
 
   await SceneLoader.ImportAnimationsAsync(
@@ -40,6 +43,7 @@ export async function loadCharacter(scene: Scene, gender: CharacterGender): Prom
     group.stop();
     animations[group.name] = group;
   }
+  enableAnimationBlending(animations);
 
   return { root, skeleton, animations };
 }

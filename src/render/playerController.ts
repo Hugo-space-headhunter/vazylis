@@ -26,11 +26,18 @@ export function createPlayerController(
   animator: Animator,
   isAutopilotActive: () => boolean,
 ): void {
+  // Accélère progressivement au départ plutôt que de sauter directement à pleine vitesse
+  // (voir PLAYER_MOVEMENT.accelerationSpeed) : contribue à un déplacement moins "robotique".
+  let speedFactor = 0;
+
   scene.onBeforeRenderObservable.add(() => {
     if (isAutopilotActive()) return;
     const deltaSeconds = engine.getDeltaTime() / 1000;
     const direction = joystick.getDirection();
     const isMoving = Math.abs(direction.x) > 0.05 || Math.abs(direction.y) > 0.05;
+
+    const targetSpeedFactor = isMoving ? 1 : 0;
+    speedFactor += (targetSpeedFactor - speedFactor) * Math.min(1, PLAYER_MOVEMENT.accelerationSpeed * deltaSeconds);
 
     if (isMoving) {
       const forward = character.root.position.subtract(camera.position);
@@ -41,7 +48,7 @@ export function createPlayerController(
       const moveDirection = forward.scale(direction.y).add(right.scale(direction.x));
       moveDirection.normalize();
 
-      character.root.position.addInPlace(moveDirection.scale(PLAYER_MOVEMENT.speed * deltaSeconds));
+      character.root.position.addInPlace(moveDirection.scale(PLAYER_MOVEMENT.speed * speedFactor * deltaSeconds));
 
       // +PI car le modèle importé fait face à +Z quand sa rotation vaut 180°, pas 0°.
       const targetRotationY = Math.atan2(moveDirection.x, moveDirection.z) + Math.PI;

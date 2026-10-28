@@ -5,6 +5,9 @@ export const PLAYER_MOVEMENT = {
   speed: 3.2,
   /** Vitesse à laquelle le personnage pivote pour faire face à sa direction (plus grand = plus réactif). */
   turnSpeed: 12,
+  /** Vitesse à laquelle le personnage accélère/freine (plus grand = démarrage et arrêt plus rapides).
+   * Évite un démarrage/arrêt instantané, qui donne une impression de déplacement "robotique". */
+  accelerationSpeed: 6,
 };
 
 // Caméra en orbite autour du personnage (ArcRotateCamera) : elle ne suit que sa position,

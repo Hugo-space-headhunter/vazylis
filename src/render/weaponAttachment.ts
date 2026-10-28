@@ -2,6 +2,7 @@ import { AbstractMesh, Scene, SceneLoader } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
 import { WEAPON_FAMILIES, type WeaponFamily, type WeaponFamilyId } from "../config/items";
 import type { LoadedCharacter } from "./character";
+import { simplifyMaterials } from "./materialUtils";
 import { makeRotatable } from "./transformUtils";
 
 export interface WeaponVisual {
@@ -37,6 +38,7 @@ export function createWeaponVisual(scene: Scene, character: LoadedCharacter): We
     }
 
     makeRotatable(root);
+    simplifyMaterials(root);
     const bone = character.skeleton.bones.find((b) => b.name === HAND_BONE_NAME);
     if (!bone) {
       root.dispose();
