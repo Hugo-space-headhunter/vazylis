@@ -73,6 +73,14 @@ const SPAWN_POINTS: { monsterId: keyof typeof MONSTERS; position: Vector3 }[] = 
   { monsterId: "pomelin", position: new Vector3(8, 0, 5) },
   { monsterId: "pomelin", position: new Vector3(-9, 0, 3) },
   { monsterId: "pomelin_royal", position: new Vector3(13, 0, -9) },
+  // Le Bois des Lucioles (sous-zone 2), plus loin vers l'est.
+  { monsterId: "gobelin_chapardeur", position: new Vector3(24, 0, 4) },
+  { monsterId: "gobelin_chapardeur", position: new Vector3(30, 0, -3) },
+  { monsterId: "ronce_gueule", position: new Vector3(27, 0, 9) },
+  { monsterId: "ronce_gueule", position: new Vector3(33, 0, 2) },
+  { monsterId: "gobelin_chaman", position: new Vector3(22, 0, -5) },
+  { monsterId: "gobelin_chaman", position: new Vector3(35, 0, 6) },
+  { monsterId: "gueule_fleur", position: new Vector3(29, 0, -8) },
 ];
 
 const PLAYER_HEAD_HEIGHT = 1.7;

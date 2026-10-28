@@ -1,5 +1,5 @@
-// Monstres de la première sous-zone (Les Prés de Vazylis, niveaux 1-10).
-// Voir docs/game-design.md, section "Zone 1 — La Vallée claire".
+// Monstres des deux premières sous-zones (Les Prés de Vazylis 1-10, Le Bois des
+// Lucioles 11-20). Voir docs/game-design.md, section "Zone 1 — La Vallée claire".
 // Valeurs de départ, à régler en jouant.
 
 export type MonsterLootTier = "monstre" | "sous_boss";
@@ -26,6 +26,8 @@ export interface MonsterDefinition {
   placeholderColor: [number, number, number];
   /** "sous_boss" change la table de butin et l'exclut du tirage "monstre champion". Par défaut "monstre". */
   lootTier?: MonsterLootTier;
+  /** Nom de l'animation d'attaque dans le modèle (certains packs n'utilisent pas "Attack"). Par défaut "Attack". */
+  attackAnimation?: string;
 }
 
 /** Monstre champion : 1 monstre sur 200, plus gros avec une aura, 5 fois plus de vie et d'XP
@@ -108,6 +110,82 @@ export const MONSTERS: Record<string, MonsterDefinition> = {
     respawnSeconds: 300,
     baseXp: 70,
     placeholderColor: [0.21, 0.64, 0.11],
+    lootTier: "sous_boss",
+  },
+  gobelin_chapardeur: {
+    id: "gobelin_chapardeur",
+    name: "Gobelin chapardeur",
+    level: 12,
+    modelUrl: "models/monsters/gobelin_chapardeur/monkroose.gltf",
+    scale: 0.75,
+    maxHp: 70,
+    damage: 8,
+    aggressive: true,
+    moveSpeed: 3,
+    attackRange: 1.6,
+    attackIntervalSeconds: 0.9,
+    aggroRadius: 7,
+    respawnSeconds: 13,
+    baseXp: 18,
+    placeholderColor: [0.3, 0.55, 0.2],
+    attackAnimation: "Punch",
+  },
+  ronce_gueule: {
+    id: "ronce_gueule",
+    name: "Ronce-gueule",
+    level: 14,
+    modelUrl: "models/monsters/ronce_gueule/mushnub.gltf",
+    scale: 0.9,
+    maxHp: 90,
+    damage: 9,
+    // Immobile : ne riposte (et ne frappe) que si le joueur reste à portée, ne poursuit jamais.
+    aggressive: false,
+    moveSpeed: 0,
+    attackRange: 2.2,
+    attackIntervalSeconds: 1.6,
+    aggroRadius: 0,
+    respawnSeconds: 16,
+    baseXp: 20,
+    placeholderColor: [0.55, 0.15, 0.45],
+    attackAnimation: "Bite_Front",
+  },
+  gobelin_chaman: {
+    id: "gobelin_chaman",
+    name: "Gobelin chaman",
+    level: 16,
+    modelUrl: "models/monsters/gobelin_chaman/tribal.gltf",
+    scale: 0.85,
+    maxHp: 75,
+    damage: 7,
+    aggressive: true,
+    moveSpeed: 2,
+    // Grande portée pour simuler son attaque à distance (pas encore de vrais projectiles).
+    attackRange: 4.5,
+    attackIntervalSeconds: 1.5,
+    aggroRadius: 8,
+    respawnSeconds: 14,
+    baseXp: 24,
+    placeholderColor: [0.5, 0.3, 0.15],
+    attackAnimation: "Punch",
+  },
+  gueule_fleur: {
+    id: "gueule_fleur",
+    name: "Gueule-Fleur",
+    level: 20,
+    // Même modèle que la Ronce-gueule (Mushnub), en version adulte ("Evolved").
+    modelUrl: "models/monsters/ronce_gueule/mushnub_evolved.gltf",
+    scale: 1.3,
+    maxHp: 420,
+    damage: 16,
+    aggressive: false,
+    moveSpeed: 0,
+    attackRange: 2.5,
+    attackIntervalSeconds: 1.4,
+    aggroRadius: 0,
+    respawnSeconds: 300,
+    baseXp: 130,
+    placeholderColor: [0.55, 0.15, 0.45],
+    attackAnimation: "Bite_Front",
     lootTier: "sous_boss",
   },
 };

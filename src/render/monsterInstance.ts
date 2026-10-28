@@ -35,7 +35,7 @@ export async function spawnMonster(
   const animator = createAnimator(visual.animations, {
     idle: "Idle",
     walk: "Walk",
-    attack: "Attack",
+    attack: definition.attackAnimation ?? "Attack",
     death: "Death",
   });
 

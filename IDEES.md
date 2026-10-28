@@ -37,3 +37,10 @@ Notes et améliorations hors périmètre de l'étape en cours, à reprendre plus
 - Le **mode AFK** fait marcher le personnage en ligne droite vers le monstre le plus proche (même limite que le déplacement des monstres agressifs, voir plus haut) : pas de recherche de chemin, il peut rester bloqué contre un obstacle. Pas de filtre de recyclage automatique non plus pour l'instant (prévu dans le document de design pour éviter que le sac se remplisse en AFK) : pour l'instant, le butin s'accumule normalement, sans vidage automatique.
 - Les **monstres champions** (1 sur 200) sont testés par la logique (tests automatisés) mais pas encore vus en jeu sur iPhone, vu leur rareté : à surveiller la première fois que Hugo en croise un (taille, aura orange, butin).
 - Les 3 sous-zones suivantes (Bois des Lucioles, Ruines du Guet, Lisière pourpre) utilisent encore le même terrain et les mêmes décors que "Les Prés de Vazylis" : pas de distinction visuelle entre sous-zones pour l'instant, ça viendra avec leurs propres monstres et décors (prochains morceaux de l'étape 6).
+
+### Étape 6 — zone 1 complète (2/4 : Le Bois des Lucioles)
+
+- Pas de modèle CC0 trouvé littéralement nommé "gobelin" : le Gobelin chapardeur et le Gobelin chaman réutilisent deux créatures du pack "Ultimate Monsters" (Monkroose, Tribal) choisies pour leur ressemblance (oreilles, masque à plumes), voir `ASSETS.md`. À remplacer si un vrai modèle de gobelin CC0 est trouvé plus tard.
+- Le **Gobelin chaman** "attaque à distance" en jouant simplement l'animation de coup de poing avec une grande portée : pas de vraie boule verte qui vole jusqu'au joueur (pas de système de projectile pour l'instant).
+- La **Ronce-gueule** et la **Gueule-Fleur** sont immobiles (comme prévu dans le document de design), mais elles ne se défendent qu'une fois touchées une première fois (comme le Cochonnet/Corbac) : impossible de se faire surprendre en marchant dessus sans les avoir attaquées.
+- Le Bois des Lucioles est juste une zone de spawn plus loin sur le même terrain plat que Les Prés de Vazylis (même sol, mêmes couleurs) : pas encore de vrai décor de forêt. Prévu pour la passe "décors" en fin de projet.

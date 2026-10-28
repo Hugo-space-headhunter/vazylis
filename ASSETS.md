@@ -22,6 +22,15 @@ Les packs sources téléchargés sont dans `assets/quaternius/` (non suivis par 
 - **Cochonnet de suie** et **Corbac** : aucun modèle CC0 trouvé chez Quaternius ou KayKit pour l'instant. Formes provisoires simples (sphères), générées dans `src/render/monster.ts`, en attendant un modèle adapté.
 - Pack écarté : **Bestiary - Dungeon Monsters Kit** (Quaternius) — téléchargé mais non utilisé, car il est sous licence « Quaternius Asset License (QAL) » (pas CC0) et ne contient aucune animation.
 
+### Monstres de la sous-zone 2 (étape 6)
+
+- **Ultimate Monsters** — Quaternius (https://quaternius.com/packs/ultimatemonsters.html), licence CC0. 50 monstres animés, fournis en glTF (fichiers autonomes, textures et géométrie intégrées, pas de fichier séparé à gérer). Téléchargé via le dossier Google Drive public lié depuis la page du pack (https://drive.google.com/drive/folders/18m4KpzpEzhC9wl7jzr6dUc0N8Jozr79C), car itch.io est bloqué par une protection anti-robot depuis l'environnement de Claude Code.
+  - **Mushnub** → la **Ronce-gueule** (`public/models/monsters/ronce_gueule/mushnub.gltf`).
+  - **Mushnub_Evolved** → le sous-boss **Gueule-Fleur** (`public/models/monsters/ronce_gueule/mushnub_evolved.gltf`), version adulte du même modèle.
+  - **Monkroose** → le **Gobelin chapardeur** (`public/models/monsters/gobelin_chapardeur/monkroose.gltf`) : pas de modèle littéralement nommé "gobelin" dans les packs CC0 trouvés, mais ses grandes oreilles et sa bouille verte collent bien au personnage.
+  - **Tribal** → le **Gobelin chaman** (`public/models/monsters/gobelin_chaman/tribal.gltf`) : son masque à plumes correspond à "couvert d'os et de plumes" dans le document de design.
+  - Le pack contient 46 autres modèles non utilisés pour l'instant (dont **MushroomKing**, **Orc**, **Orc_Skull**), qui pourront resservir pour les zones suivantes.
+
 ### Armes (étape 4)
 
 - **3D Fantasy Weapons Pack (version "low", basse définition)** — Polyy (https://polyy.ai), licence CC0 (confirmée dans `LICENSE.txt` du pack). 25 armes fantasy, déjà en `.glb`, pensées pour mobile. Quatre sont utilisées pour l'instant :
