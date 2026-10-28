@@ -1,6 +1,6 @@
-// Monstres des deux premières sous-zones (Les Prés de Vazylis 1-10, Le Bois des
-// Lucioles 11-20). Voir docs/game-design.md, section "Zone 1 — La Vallée claire".
-// Valeurs de départ, à régler en jouant.
+// Monstres des trois premières sous-zones (Les Prés de Vazylis 1-10, Le Bois des
+// Lucioles 11-20, Les Ruines du Guet 21-30). Voir docs/game-design.md, section
+// "Zone 1 — La Vallée claire". Valeurs de départ, à régler en jouant.
 
 export type MonsterLootTier = "monstre" | "sous_boss";
 
@@ -28,6 +28,14 @@ export interface MonsterDefinition {
   lootTier?: MonsterLootTier;
   /** Nom de l'animation d'attaque dans le modèle (certains packs n'utilisent pas "Attack"). Par défaut "Attack". */
   attackAnimation?: string;
+  /** Nom de l'animation de repos (certains packs n'ont pas de vraie boucle "Idle"). Par défaut "Idle". */
+  idleAnimation?: string;
+  /** Nom de l'animation de marche (certains packs l'appellent autrement, ex. "Running"). Par défaut "Walk". */
+  walkAnimation?: string;
+  /** Chance de bloquer entièrement un coup du joueur (statue, armure...). Par défaut 0. */
+  blockChance?: number;
+  /** Remplace la couleur du modèle par une teinte unie (ex. un modèle réutilisé comme substitut). */
+  tintColor?: [number, number, number];
 }
 
 /** Monstre champion : 1 monstre sur 200, plus gros avec une aura, 5 fois plus de vie et d'XP
@@ -186,6 +194,92 @@ export const MONSTERS: Record<string, MonsterDefinition> = {
     baseXp: 130,
     placeholderColor: [0.55, 0.15, 0.45],
     attackAnimation: "Bite_Front",
+    lootTier: "sous_boss",
+  },
+  gargouillon: {
+    id: "gargouillon",
+    name: "Gargouillon",
+    level: 22,
+    modelUrl: "models/monsters/gargouillon/dragon.glb",
+    scale: 0.6,
+    maxHp: 140,
+    damage: 11,
+    aggressive: true,
+    // "Ailes trop courtes" : ne vole pas vite, et "très résistant, frappe lentement".
+    moveSpeed: 1.5,
+    attackRange: 1.8,
+    attackIntervalSeconds: 1.8,
+    aggroRadius: 6,
+    respawnSeconds: 14,
+    baseXp: 26,
+    placeholderColor: [0.45, 0.45, 0.48],
+    // Ce modèle n'a pas de vraie boucle de repos, juste un vol sur place.
+    idleAnimation: "Flying",
+    walkAnimation: "Flying",
+    // Les couleurs d'origine du modèle sont presque noires (pensées pour un rendu PBR avec
+    // reflets, qu'on n'a pas) : on les remplace par un gris pierre, plus adapté à une gargouille.
+    tintColor: [0.55, 0.55, 0.58],
+  },
+  rat_cryptes: {
+    id: "rat_cryptes",
+    name: "Rat des cryptes",
+    level: 24,
+    modelUrl: "models/monsters/rat_cryptes/dog.gltf",
+    scale: 0.7,
+    maxHp: 55,
+    damage: 6,
+    // "Attaque en groupe" : rapide, respawn court, pour une sensation de meute.
+    aggressive: true,
+    moveSpeed: 3.3,
+    attackRange: 1.5,
+    attackIntervalSeconds: 0.8,
+    aggroRadius: 8,
+    respawnSeconds: 11,
+    baseXp: 20,
+    placeholderColor: [0.3, 0.25, 0.28],
+    attackAnimation: "Bite_Front",
+  },
+  ecuyer_creux: {
+    id: "ecuyer_creux",
+    name: "Écuyer creux",
+    level: 26,
+    modelUrl: "models/monsters/ecuyer_creux/skeleton.glb",
+    scale: 1,
+    maxHp: 110,
+    damage: 10,
+    aggressive: true,
+    moveSpeed: 2.2,
+    attackRange: 1.8,
+    attackIntervalSeconds: 1.2,
+    aggroRadius: 7,
+    respawnSeconds: 15,
+    baseXp: 30,
+    placeholderColor: [0.5, 0.48, 0.45],
+    walkAnimation: "Running",
+    // "Pare parfois les coups".
+    blockChance: 0.25,
+  },
+  gardien_sans_visage: {
+    id: "gardien_sans_visage",
+    name: "le Gardien sans visage",
+    level: 30,
+    // Même modèle que l'Écuyer creux, en plus grand (voir "scale").
+    modelUrl: "models/monsters/ecuyer_creux/skeleton.glb",
+    scale: 1.5,
+    maxHp: 480,
+    damage: 18,
+    // "Statue... qui s'éveille" : immobile tant qu'on ne l'attaque pas, comme Gueule-Fleur.
+    aggressive: false,
+    moveSpeed: 0,
+    attackRange: 2.3,
+    attackIntervalSeconds: 1.5,
+    aggroRadius: 0,
+    respawnSeconds: 300,
+    baseXp: 150,
+    placeholderColor: [0.5, 0.48, 0.45],
+    walkAnimation: "Running",
+    // "Bloque de face" : chance de blocage plus élevée que l'Écuyer creux.
+    blockChance: 0.35,
     lootTier: "sous_boss",
   },
 };

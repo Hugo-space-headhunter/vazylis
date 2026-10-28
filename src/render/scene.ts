@@ -40,10 +40,10 @@ export function createScene(canvas: HTMLCanvasElement): GameScene {
   // tombent au noir complet, et les modèles ressemblent à de simples silhouettes).
   light.groundColor = new Color3(0.25, 0.22, 0.3);
 
-  // Assez grand pour couvrir Les Prés de Vazylis ET Le Bois des Lucioles (jusqu'à x=35),
-  // sinon le personnage marche dans le vide une fois sorti de la première sous-zone.
-  const ground = MeshBuilder.CreateGround("ground", { width: 90, height: 40 }, scene);
-  ground.position.x = 15;
+  // Assez grand pour couvrir les trois premières sous-zones (jusqu'à x=62), sinon le
+  // personnage marche dans le vide une fois sorti des Prés de Vazylis.
+  const ground = MeshBuilder.CreateGround("ground", { width: 120, height: 40 }, scene);
+  ground.position.x = 20;
   const groundMaterial = new StandardMaterial("groundMaterial", scene);
   groundMaterial.diffuseColor = new Color3(0.2, 0.17, 0.25);
   ground.material = groundMaterial;
@@ -51,6 +51,7 @@ export function createScene(canvas: HTMLCanvasElement): GameScene {
   addLandmarks(scene);
   addVazylisLandmark(scene);
   addBoisDesLucioles(scene);
+  addRuinesDuGuet(scene);
 
   const camera = new ArcRotateCamera(
     "camera",
@@ -165,5 +166,38 @@ function addBoisDesLucioles(scene: Scene): void {
     );
     leaves.position.set(x, 2.9, z);
     leaves.material = leavesMaterial;
+  });
+}
+
+/** Centre approximatif de la zone de spawn de la sous-zone 3 (voir SPAWN_POINTS dans combatController.ts). */
+const RUINES_DU_GUET_CENTER = new Vector3(55, 0, 1);
+
+/**
+ * Décor des Ruines du Guet : un sol plus pâle et quelques blocs de pierre cassés en
+ * hauteurs irrégulières, pour donner une impression de forteresse effondrée. Toujours
+ * des formes de base (voir ASSETS.md) : un vrai décor de ruines viendra plus tard.
+ */
+function addRuinesDuGuet(scene: Scene): void {
+  const patchMaterial = new StandardMaterial("ruinesPatchMaterial", scene);
+  patchMaterial.diffuseColor = new Color3(0.28, 0.26, 0.27);
+  const patch = MeshBuilder.CreateGround("ruines-du-guet-patch", { width: 28, height: 26 }, scene);
+  patch.position.set(RUINES_DU_GUET_CENTER.x, 0.01, RUINES_DU_GUET_CENTER.z);
+  patch.material = patchMaterial;
+
+  const stoneMaterial = new StandardMaterial("ruinesStoneMaterial", scene);
+  stoneMaterial.diffuseColor = new Color3(0.38, 0.36, 0.37);
+
+  // Blocs et bouts de colonnes cassées, de hauteurs irrégulières, autour de la clairière.
+  const blocks: [number, number, number, number][] = [
+    [-12, -10, 1.2, 1.5], [-6, -11, 0.8, 1], [1, -11, 1.4, 2.2], [8, -10, 0.9, 1.3],
+    [-12, 10, 1, 1.8], [-5, 11, 1.3, 1], [2, 11, 0.9, 2.4], [8, 10, 1.1, 1.6],
+    [-13, 0, 1.2, 2], [13, 2, 1, 1.4], [13, -5, 0.9, 1],
+  ];
+
+  blocks.forEach(([dx, dz, size, height], index) => {
+    const block = MeshBuilder.CreateBox(`ruines-block-${index}`, { size, height }, scene);
+    block.position.set(RUINES_DU_GUET_CENTER.x + dx, height / 2, RUINES_DU_GUET_CENTER.z + dz);
+    block.rotation.y = (index * 0.7) % Math.PI;
+    block.material = stoneMaterial;
   });
 }

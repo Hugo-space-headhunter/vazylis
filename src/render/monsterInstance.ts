@@ -33,8 +33,8 @@ export async function spawnMonster(
   visual.root.position.copyFrom(position);
 
   const animator = createAnimator(visual.animations, {
-    idle: "Idle",
-    walk: "Walk",
+    idle: definition.idleAnimation ?? "Idle",
+    walk: definition.walkAnimation ?? "Walk",
     attack: definition.attackAnimation ?? "Attack",
     death: "Death",
   });

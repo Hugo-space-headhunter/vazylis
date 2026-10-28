@@ -10,7 +10,7 @@ import {
 import "@babylonjs/loaders/glTF";
 import type { MonsterDefinition } from "../config/monsters";
 import { enableAnimationBlending } from "./animationUtils";
-import { simplifyMaterials } from "./materialUtils";
+import { simplifyMaterials, tintMaterials } from "./materialUtils";
 import { makeRotatable } from "./transformUtils";
 
 export interface MonsterVisual {
@@ -37,6 +37,9 @@ async function loadMonsterModel(scene: Scene, definition: MonsterDefinition): Pr
   const root = result.meshes[0];
   makeRotatable(root);
   simplifyMaterials(root);
+  if (definition.tintColor) {
+    tintMaterials(root, definition.tintColor);
+  }
   root.scaling.setAll(definition.scale);
 
   const animations: Record<string, AnimationGroup> = {};

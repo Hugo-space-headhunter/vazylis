@@ -65,3 +65,8 @@ export function rollBlock(weapon: InventoryItem | null, randomValue: number): bo
   const family = equippedWeaponFamily(weapon);
   return (family?.blockChance ?? 0) > randomValue;
 }
+
+/** Chance qu'un monstre bloque entièrement un coup du joueur (statue, armure animée...). */
+export function rollMonsterBlock(blockChance: number, randomValue: number): boolean {
+  return blockChance > randomValue;
+}

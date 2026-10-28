@@ -35,7 +35,7 @@ Notes et améliorations hors périmètre de l'étape en cours, à reprendre plus
 - **Pomelin Royal** (sous-boss) est juste un Pomelin plus gros et plus résistant : sa capacité spéciale "invoque des Pomelins" décrite dans le document de design n'est pas encore codée. À ajouter si ça manque en jouant.
 - Le **mode AFK** fait marcher le personnage en ligne droite vers le monstre le plus proche (même limite que le déplacement des monstres agressifs, voir plus haut) : pas de recherche de chemin, il peut rester bloqué contre un obstacle. Pas de filtre de recyclage automatique non plus pour l'instant (prévu dans le document de design pour éviter que le sac se remplisse en AFK) : pour l'instant, le butin s'accumule normalement, sans vidage automatique.
 - Les **monstres champions** (1 sur 200) sont testés par la logique (tests automatisés) mais pas encore vus en jeu sur iPhone, vu leur rareté : à surveiller la première fois que Hugo en croise un (taille, aura orange, butin).
-- Les 2 sous-zones restantes (Ruines du Guet, Lisière pourpre) utilisent encore le même terrain nu que "Les Prés de Vazylis" : pas de décor pour l'instant, ça viendra avec leurs propres monstres (prochains morceaux de l'étape 6).
+- La sous-zone restante (Lisière pourpre) utilise encore le même terrain nu que "Les Prés de Vazylis" : pas de décor pour l'instant, ça viendra avec ses propres monstres (dernier morceau de l'étape 6).
 
 ### Étape 6 — zone 1 complète (2/4 : Le Bois des Lucioles)
 
@@ -55,3 +55,10 @@ Hugo a signalé des personnages tout blancs/un sol tout noir sur iPhone, un dép
 - **Important pour Hugo** : un "service worker" (qui permet de jouer hors ligne) peut garder une ancienne version du jeu en cache sur l'iPhone. Si après cette mise à jour le jeu a toujours l'air cassé ou pas à jour, il faut fermer complètement l'app (pas juste la mettre en arrière-plan) et la rouvrir, ou en dernier recours la supprimer de l'écran d'accueil et la réinstaller.
 - **Pas de vrai enchaînement de coups (combo)** : une seule animation de coup d'épée existe dans la bibliothèque. Un vrai système de combo (plusieurs mouvements qui s'enchaînent) demanderait d'autres animations, à chercher plus tard si Hugo le souhaite.
 - Rendu confirmé bon par Hugo après ces correctifs. Il souhaite reporter à une passe de finition dédiée, en fin de projet : la qualité générale de la 3D, la fluidité des mouvements, les animations, les dimensions et la position des éléments dans l'espace (échelle des monstres/décors, distances, etc.).
+
+### Étape 6 — zone 1 complète (3/4 : Les Ruines du Guet)
+
+- Pas de modèle CC0 trouvé pour une gargouille, un rat ou une armure animée : le Gargouillon réutilise un dragon (teinté gris pierre), le Rat des cryptes réutilise un chien (réduit), l'Écuyer creux et le Gardien sans visage réutilisent un squelette guerrier. Voir `ASSETS.md`. À remplacer si de vrais modèles CC0 sont trouvés plus tard.
+- **Nouveau : les monstres peuvent maintenant bloquer un coup du joueur** (`blockChance` dans `src/config/monsters.ts`), pour "Pare parfois les coups" (Écuyer creux) et "Bloque de face" (Gardien sans visage). Affiche "Bloqué !" comme pour le joueur, mais pas de vraie différence entre un blocage de face et un coup dans le dos (le document de design distingue les deux pour le Gardien) : simplifié en une chance de blocage unique, quelle que soit la direction de l'attaque.
+- Le Gardien sans visage "frappe en zone" dans le document de design (plusieurs cibles à la fois) : pour l'instant, comme tous les monstres, il ne touche que le joueur (pas de vraies attaques de zone dans le prototype).
+- Les Ruines du Guet n'ont pas encore de décor distinctif (juste un sol plus clair et quelques blocs de pierre cassés) : pas de vrais murs ou arches en ruine pour l'instant.

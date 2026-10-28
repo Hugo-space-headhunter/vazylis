@@ -11,7 +11,7 @@ import {
 import { CHAMPION, MONSTERS } from "../config/monsters";
 import { PLAYER_MOVEMENT } from "../config/player";
 import { GUARANTEED_RESOURCE_DROP, RESOURCE_DROP } from "../config/resources";
-import { playerMaxHp, rollBlock, rollPlayerDamage, weaponAttackInterval } from "../game/combat";
+import { playerMaxHp, rollBlock, rollMonsterBlock, rollPlayerDamage, weaponAttackInterval } from "../game/combat";
 import {
   addItem,
   addResource,
@@ -81,6 +81,14 @@ const SPAWN_POINTS: { monsterId: keyof typeof MONSTERS; position: Vector3 }[] = 
   { monsterId: "gobelin_chaman", position: new Vector3(22, 0, -5) },
   { monsterId: "gobelin_chaman", position: new Vector3(35, 0, 6) },
   { monsterId: "gueule_fleur", position: new Vector3(29, 0, -8) },
+  // Les Ruines du Guet (sous-zone 3), encore plus loin vers l'est.
+  { monsterId: "gargouillon", position: new Vector3(52, 0, 5) },
+  { monsterId: "gargouillon", position: new Vector3(58, 0, -4) },
+  { monsterId: "rat_cryptes", position: new Vector3(50, 0, -2) },
+  { monsterId: "rat_cryptes", position: new Vector3(55, 0, 8) },
+  { monsterId: "ecuyer_creux", position: new Vector3(62, 0, 2) },
+  { monsterId: "ecuyer_creux", position: new Vector3(48, 0, 7) },
+  { monsterId: "gardien_sans_visage", position: new Vector3(60, 0, -8) },
 ];
 
 const PLAYER_HEAD_HEIGHT = 1.7;
@@ -293,9 +301,14 @@ export async function createCombatController(
   }
 
   function playerAttack(target: MonsterInstance): void {
+    target.engaged = true;
+    if (rollMonsterBlock(target.definition.blockChance ?? 0, Math.random())) {
+      overlay.showDamageNumber(target.headPosition(), 0, { blocked: true });
+      return;
+    }
+
     const roll = rollPlayerDamage(player.stats, player.inventory.equipment.weapon, Math.random());
     target.hp -= roll.amount;
-    target.engaged = true;
     overlay.showDamageNumber(target.headPosition(), roll.amount, { critical: roll.isCritical });
     if (target.hp <= 0) {
       killMonster(target);

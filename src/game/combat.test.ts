@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { playerBaseDamage, playerMaxHp, rollBlock, rollPlayerDamage, weaponAttackInterval } from "./combat";
+import { playerBaseDamage, playerMaxHp, rollBlock, rollMonsterBlock, rollPlayerDamage, weaponAttackInterval } from "./combat";
 import type { InventoryItem } from "./inventory";
 import { EMPTY_STATS, type PlayerStats } from "./stats";
 
@@ -103,5 +103,16 @@ describe("rollBlock", () => {
   it("peut bloquer avec épée et bouclier sous la chance de blocage", () => {
     expect(rollBlock(makeWeapon("epee_bouclier"), 0.05)).toBe(true);
     expect(rollBlock(makeWeapon("epee_bouclier"), 0.5)).toBe(false);
+  });
+});
+
+describe("rollMonsterBlock", () => {
+  it("ne bloque jamais sans chance de blocage", () => {
+    expect(rollMonsterBlock(0, 0)).toBe(false);
+  });
+
+  it("bloque sous la chance de blocage du monstre", () => {
+    expect(rollMonsterBlock(0.25, 0.1)).toBe(true);
+    expect(rollMonsterBlock(0.25, 0.5)).toBe(false);
   });
 });
